@@ -1,0 +1,22 @@
+{
+    "name": "magefan/module-geoip",
+    "description": "",
+    "version": "1.1.0",
+    "license": "proprietary",
+    "authors": [
+        {
+            "email": "info@mage2gen.com",
+            "name": "Mage2Gen"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Magefan\\GeoIp\\": ""
+        },
+        "files": [
+            "registration.php"
+        ]
+    }
+}
