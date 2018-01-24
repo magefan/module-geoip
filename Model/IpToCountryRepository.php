@@ -48,9 +48,11 @@ class IpToCountryRepository
     public function getCountryCode($ip)
     {
         if (!isset($this->ipToCountry[$ip])) {
+            $this->ipToCountry[$ip] = false;
             if (function_exists('geoip_country_code_by_name')) {
                 $this->ipToCountry[$ip] = geoip_country_code_by_name($ip);
-            } else {
+            }
+            if (!$this->ipToCountry[$ip]) {
                 $longIp = ip2long($ip);
                 $collection = $this->ipToCountryCollectionFactory->create();
                 $collection->addFielToFilter('ip_from', ["gteq" => $longIp])
