@@ -1,16 +1,22 @@
 <?php
+/**
+ * Copyright © Magefan (support@magefan.com). All rights reserved.
+ * See LICENSE.txt for license details (http://opensource.org/licenses/osl-3.0.php).
+ */
 
 namespace Magefan\GeoIp\Setup;
 
 use Magento\Framework\DB\Adapter\AdapterInterface;
 
+/**
+ * Install GeoIp database tables schema
+ */
 class InstallSchema implements \Magento\Framework\Setup\InstallSchemaInterface
 {
 
     public function install(\Magento\Framework\Setup\SchemaSetupInterface $setup, \Magento\Framework\Setup\ModuleContextInterface $context)
     {
         $installer = $setup;
-
         $installer->startSetup();
 
         /**

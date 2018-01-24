@@ -2,8 +2,6 @@
 /**
  * Copyright © Magefan (support@magefan.com). All rights reserved.
  * See LICENSE.txt for license details (http://opensource.org/licenses/osl-3.0.php).
- *
- * Glory to Ukraine! Glory to the heroes!
  */
 
 namespace Magefan\GeoIp\Setup;
@@ -23,6 +21,9 @@ class InstallData implements InstallDataInterface {
      */
     protected $resources;
 
+    /**
+     * @param \Magento\Framework\App\ResourceConnection $resources [description]
+     */
     public function __construct(\Magento\Framework\App\ResourceConnection $resources)
     {
         $this->resources = $resources;
@@ -34,7 +35,7 @@ class InstallData implements InstallDataInterface {
      */
     public function install( ModuleDataSetupInterface $setup, ModuleContextInterface $context ) {
 
-        $connection= $this->resources->getConnection();
+        $connection = $this->resources->getConnection();
 
         $table = $connection->getTableName( 'magefan_geoip_country' );
 

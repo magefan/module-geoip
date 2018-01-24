@@ -2,8 +2,6 @@
 /**
  * Copyright © Magefan (support@magefan.com). All rights reserved.
  * See LICENSE.txt for license details (http://opensource.org/licenses/osl-3.0.php).
- *
- * Glory to Ukraine! Glory to the heroes!
  */
 
 namespace Magefan\GeoIp\Model;
@@ -43,8 +41,9 @@ class IpToCountryRepository
     }
 
     /**
-     * @param $ip
-     * @return mixed
+     * [getCountryCode description]
+     * @param  string $ip
+     * @return string | false
      */
     public function getCountryCode($ip)
     {
@@ -66,7 +65,8 @@ class IpToCountryRepository
     }
 
     /**
-     * @return mixed
+     * Retrieve current visitor country code by IP
+     * @return string | false
      */
     public function getVisitorCountryCode()
     {
