@@ -3,7 +3,7 @@
 [![Total Downloads](https://poser.pugx.org/magefan/module-geoip/downloads)](https://packagist.org/packages/magefan/module-geoip)
 [![Latest Stable Version](https://poser.pugx.org/magefan/module-geoip/v/stable)](https://packagist.org/packages/magefan/module-geoip)
 
-This Magento 2 Blog module allows you to get customer country by ip.
+This Magento 2 GeoIp module provides you PHP methods for getting customer country by IP, without any additional plugin for PHP.
 
 ## Requirements
   * Magento Community Edition 2.0.x-2.2.x or Magento Enterprise Edition 2.0.x-2.2.x
