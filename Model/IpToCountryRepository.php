@@ -55,8 +55,8 @@ class IpToCountryRepository
             if (!$this->ipToCountry[$ip]) {
                 $longIp = ip2long($ip);
                 $collection = $this->ipToCountryCollectionFactory->create();
-                $collection->addFielToFilter('ip_from', ["gteq" => $longIp])
-                    ->addFielToFilter('ip_to', ["lteq" => $longIp])
+                $collection->addFieldToFilter('ip_from', ["gteq" => $longIp])
+                    ->addFieldToFilter('ip_to', ["lteq" => $longIp])
                     ->setPageSize(1);
                 $ipInfo = $collection->getFirstItem();
                 $this->ipToCountry[$ip] = $ipInfo->getCountryCode() ?: false;
