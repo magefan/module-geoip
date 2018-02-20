@@ -37,7 +37,7 @@ class InstallData implements InstallDataInterface {
 
         $connection = $this->resources->getConnection();
 
-        $table = $connection->getTableName( 'magefan_geoip_country' );
+        $table = $this->resources->getTableName( 'magefan_geoip_country' );
 
         $dataFile = dirname(dirname(__FILE__)) . '/data/IpToCountry.php';
         $data = require $dataFile;
