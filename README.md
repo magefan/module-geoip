@@ -5,6 +5,8 @@
 
 This Magento 2 GeoIp module provides you PHP methods for getting customer country by IP, without any additional plugin for PHP.
 
+It is used for [Magento 2 Currency Auto Switcher](https://magefan.com/magento-2-currency-switcher-auto-currency-by-country) by Magefan
+
 ## Requirements
   * Magento Community Edition 2.0.x-2.2.x or Magento Enterprise Edition 2.0.x-2.2.x
 
