@@ -52,6 +52,16 @@ class IpToCountryRepository
             if (function_exists('geoip_country_code_by_name')) {
                 $this->ipToCountry[$ip] = geoip_country_code_by_name($ip);
             }
+
+            if (!$this->ipToCountry[$ip]) {
+                $datFile = realpath(dirname(__FILE__) . '/../data/GeoLite2-Country.mmdb');
+                $reader = new \GeoIp2\Database\Reader($datFile);
+                $record = $reader->country($ip);
+                if ($record && $record->country && $record->country->isoCode) {
+                    $this->ipToCountry[$ip] = $record->country->isoCode;
+                }
+            }
+
             if (!$this->ipToCountry[$ip]) {
                 $longIp = ip2long($ip);
                 $collection = $this->ipToCountryCollectionFactory->create();
