@@ -6,7 +6,7 @@
         "geoip2/geoip2": "^2.9.0"
     },
     "type": "magento2-module",
-    "version": "2.0.3",
+    "version": "2.0.4",
     "autoload": {
         "psr-4": {
             "Magefan\\GeoIp\\": ""
