@@ -54,12 +54,14 @@ class IpToCountryRepository
             }
 
             if (!$this->ipToCountry[$ip]) {
-                $datFile = realpath(dirname(__FILE__) . '/../data/GeoLite2-Country.mmdb');
-                $reader = new \GeoIp2\Database\Reader($datFile);
-                $record = $reader->country($ip);
-                if ($record && $record->country && $record->country->isoCode) {
-                    $this->ipToCountry[$ip] = $record->country->isoCode;
-                }
+                try {
+                    $datFile = realpath(dirname(__FILE__) . '/../data/GeoLite2-Country.mmdb');
+                    $reader = new \GeoIp2\Database\Reader($datFile);
+                    $record = $reader->country($ip);
+                    if ($record && $record->country && $record->country->isoCode) {
+                        $this->ipToCountry[$ip] = $record->country->isoCode;
+                    }
+                } catch (\Exception $e) {}
             }
 
             if (!$this->ipToCountry[$ip]) {
