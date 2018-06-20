@@ -23,6 +23,7 @@ php bin/magento setup:static-content:deploy
 
 
 ## Installation Method 2 - Installing using archive
+  * Install GeoIP2 PHP API (https://github.com/maxmind/GeoIP2-php).
   * Download [ZIP Archive](https://github.com/magefan/module-geoip/archive/master.zip)
   * Extract files
   * In your Magento 2 root directory create folder app/code/Magefan/GeoIp
