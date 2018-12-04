@@ -58,6 +58,7 @@ class IpToCountryRepository
                     $datFile = realpath(dirname(__FILE__) . '/../data/GeoLite2-Country.mmdb');
                     $reader = new \GeoIp2\Database\Reader($datFile);
                     $record = $reader->country($ip);
+
                     if ($record && $record->country && $record->country->isoCode) {
                         $this->ipToCountry[$ip] = $record->country->isoCode;
                     }
@@ -84,8 +85,15 @@ class IpToCountryRepository
      */
     public function getVisitorCountryCode()
     {
-        return $this->getCountryCode(
-            $this->remoteAddress->getRemoteAddress()
-        );
+        return $this->getCountryCode($this->getRemoteAddress());
+    }
+
+    /**
+     * Return your ip
+     * @return string
+     */
+    public function  getRemoteAddress()
+    {
+        return $this->remoteAddress->getRemoteAddress();
     }
 }
