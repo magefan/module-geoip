@@ -46,8 +46,8 @@ class IpInfo extends \Magento\Config\Block\System\Config\Form\Field
         $ip = $this->ipRepository->getRemoteAddress();
 
         $html = '<div style="padding:10px;background-color:#f8f8f8;border:1px solid #ddd;margin-bottom:7px;">
-            Your IP Address:' . $ip . '<br/>
-            Country: <b>' . $country . '</b>.
+            Your IP Address: ' . $ip . '<br/>
+            Country: <b>' . $country . '</b>
         </div>';
 
         return $html;
