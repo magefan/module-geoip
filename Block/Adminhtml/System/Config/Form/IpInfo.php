@@ -6,34 +6,29 @@
 
 namespace Magefan\GeoIp\Block\Adminhtml\System\Config\Form;
 
-use Magento\Store\Model\ScopeInterface;
 use Magefan\GeoIp\Model\IpToCountryRepository;
 
 /**
- * Admin blog configurations information block
+ * Admin configurations IP information block
  */
 class IpInfo extends \Magento\Config\Block\System\Config\Form\Field
 {
     /**
-     * @var \Magento\Framework\Module\ModuleListInterface
+     * @var \Magefan\GeoIp\Model\IpToCountryRepository
      */
-    protected $moduleList;
-    protected $ip;
+    protected $ipRepository;
 
     /**
-     * @param \Magento\Framework\Module\ModuleListInterface $moduleList
      * @param \Magento\Backend\Block\Template\Context $context
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\Module\ModuleListInterface $moduleList,
         \Magento\Backend\Block\Template\Context $context,
-        IpToCountryRepository $ip,
+        IpToCountryRepository $ipRepository,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->moduleList       = $moduleList;
-        $this->ip = $ip;
+        $this->ipRepository = $ipRepository;
     }
 
     /**
@@ -43,15 +38,16 @@ class IpInfo extends \Magento\Config\Block\System\Config\Form\Field
      */
     public function render(\Magento\Framework\Data\Form\Element\AbstractElement $element)
     {
-        $country =  $this->ip->getVisitorCountryCode();
-
+        $country =  $this->ipRepository->getVisitorCountryCode();
         if ($country == "ZZ") {
             $country = 'Undefined';
         }
-        $ip = $this->ip->getRemoteAddress();
+        
+        $ip = $this->ipRepository->getRemoteAddress();
 
         $html = '<div style="padding:10px;background-color:#f8f8f8;border:1px solid #ddd;margin-bottom:7px;">
-            Your IP Address is ' . $ip . ' <b>('.$country.').</b> Wrong coutry, please  <a href="https://magefan.com/contact" target="_blank">contact Magefan R&D team</a>.
+            Your IP Address:' . $ip . '<br/>
+            Country: <b>' . $country . '</b>.
         </div>';
 
         return $html;
