@@ -89,7 +89,7 @@ class IpToCountryRepository
     }
 
     /**
-     * Return your ip
+     * Retrieve current IP
      * @return string
      */
     public function  getRemoteAddress()
