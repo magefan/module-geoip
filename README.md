@@ -67,6 +67,9 @@ https://magefan.com/contact
 ## License
 The code is licensed under [Open Software License ("OSL") v. 3.0](http://opensource.org/licenses/osl-3.0.php).
 
+This product includes GeoLite2 data created by MaxMind, available from
+<a href="https://www.maxmind.com">https://www.maxmind.com</a>.
+
 ## Originaly use this database
 http://software77.net/geo-ip/
 
@@ -79,5 +82,6 @@ http://software77.net/geo-ip/
   * [Magento 2 Lazy Load Extension](https://github.com/magefan/module-lazyload)
   * [Magento 2 Rocket JavaScript Extension](https://magefan.com/rocket-javascript-deferred-javascript)
   * [Magento 2 CLI Extension](https://magefan.com/magento2-cli-extension)
+  
   
   
