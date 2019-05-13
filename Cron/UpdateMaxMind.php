@@ -12,18 +12,25 @@ namespace Magefan\GeoIp\Cron;
 class UpdateMaxMind
 {
     /**
-     * @var \Magento\Framework\Filesystem\DirectoryList
+     * @var \Magefan\GeoIp\Model\GeoIpDatabase\MaxMind
      */
-    protected $_dir;
+    protected $maxMind;
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $_logger;
 
     /**
      * UpdateMaxMind constructor.
-     * @param \Magento\Framework\Filesystem\DirectoryList $dir
+     * @param \Magefan\GeoIp\Model\GeoIpDatabase\MaxMind $maxMind
+     * @param \Psr\Log\LoggerInterface $logger
      */
     public function __construct(
-        \Magento\Framework\Filesystem\DirectoryList $dir
+        \Magefan\GeoIp\Model\GeoIpDatabase\MaxMind $maxMind,
+        \Psr\Log\LoggerInterface $logger
     ) {
-        $this->_dir = $dir;
+        $this->maxMind = $maxMind;
+        $this->_logger = $logger;
     }
 
     /**
@@ -31,7 +38,12 @@ class UpdateMaxMind
      */
     public function execute()
     {
-        //Magefan\GeoIp\Model\GeoIpDatabase\MaxMind::update
+        try {
+            $this->maxMind->update();
+        } catch (\Exception $e) {
+            $this->_logger->debug($e->getMessage());
+            return false;
+        }
         return true;
     }
 }

@@ -61,7 +61,9 @@ class Button extends \Magento\Config\Block\System\Config\Form\Field
             [
                 'id'        => 'addbutton_button',
                 'button_label'     => _('Update MaxMind GeoIP Data Base'),
-                'onclick'   => 'javascript:check(); return false;'
+                'url' => $this->getUrl('mf_geoip/index/downloaddb'),
+                'ajax_url' => $this->getUrl('mf_geoip/index/downloaddb'),
+                'on_click' => "setLocation('{$this->getUrl('mf_geoip/index/downloaddb')}')"
             ]
         );
         return $this->_toHtml();

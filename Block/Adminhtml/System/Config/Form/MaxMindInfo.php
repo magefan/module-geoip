@@ -38,8 +38,6 @@ class MaxMindInfo extends \Magento\Config\Block\System\Config\Form\Field
      */
     public function render(\Magento\Framework\Data\Form\Element\AbstractElement $element)
     {
-       //$filename = 'app/code/Magefan/GeoIp//data/GeoLite2-Country.mmdb';
-       //$filePath = BP.'/app/code/Magefan/GeoIp//data/GeoLite2-Country.mmdb';
         $dirList = $this->_dir->getPath('var'). '/magefan/geoip/GeoLite2-Country.mmdb';
 
         if (file_exists($dirList)) {
