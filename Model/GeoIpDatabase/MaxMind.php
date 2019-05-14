@@ -13,6 +13,10 @@ namespace Magefan\GeoIp\Model\GeoIpDatabase;
 class MaxMind
 {
     /**
+     * Url
+     */
+    const URL = 'https://magefan.com/media/geoip/GeoLite2-Country.mmdb';
+    /**
      * @var \Magento\Framework\Filesystem\DirectoryList
      */
     protected $_dir;
@@ -80,7 +84,7 @@ class MaxMind
     {
         $dbPath = $this->_dir->getPath('var') . '/magefan/geoip';
         $this->createDir($dbPath);
-        $url = "https://magefan.com/media/geoip/GeoLite2-Country1.mmdb";
+        $url = self::URL;
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);

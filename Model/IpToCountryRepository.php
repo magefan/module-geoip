@@ -60,7 +60,7 @@ class IpToCountryRepository
                     } else {
                         $datFile = realpath(dirname(__FILE__) . '/../data/GeoLite2-Country.mmdb');
                     }
-                     $reader = new \GeoIp2\Database\Reader($datFile);
+                    $reader = new \GeoIp2\Database\Reader($datFile);
                     $record = $reader->country($ip);
 
                     if ($record && $record->country && $record->country->isoCode) {
