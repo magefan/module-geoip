@@ -39,15 +39,7 @@ class Button extends \Magento\Config\Block\System\Config\Form\Field
         $element->unsScope()->unsCanUseWebsiteValue()->unsCanUseDefaultValue();
         return parent::render($element);
     }
-    /**
-     * Return ajax url for button
-     *
-     * @return string
-     */
-    public function getAjaxCheckUrl()
-    {
-        return $this->getUrl('addbutton/listdata'); //hit controller by ajax call on button click.
-    }
+
     /**
      * Get the button and scripts contents
      *
@@ -56,16 +48,6 @@ class Button extends \Magento\Config\Block\System\Config\Form\Field
      */
     protected function _getElementHtml(\Magento\Framework\Data\Form\Element\AbstractElement $element)
     {
-        //$originalData = $element->getOriginalData();
-        $this->addData(
-            [
-                'id'        => 'addbutton_button',
-                'button_label'     => _('Update MaxMind GeoIP Data Base'),
-                'url' => $this->getUrl('mf_geoip/index/downloaddb'),
-                'ajax_url' => $this->getUrl('mf_geoip/index/downloaddb'),
-                'on_click' => "setLocation('{$this->getUrl('mf_geoip/index/downloaddb')}')"
-            ]
-        );
         return $this->_toHtml();
     }
 }

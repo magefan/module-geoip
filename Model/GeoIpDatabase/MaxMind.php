@@ -80,7 +80,7 @@ class MaxMind
     {
         $dbPath = $this->_dir->getPath('var') . '/magefan/geoip';
         $this->createDir($dbPath);
-        $url = "https://magefan.com/media/geoip/GeoLite2-Country.mmdb";
+        $url = "https://magefan.com/media/geoip/GeoLite2-Country1.mmdb";
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -91,7 +91,7 @@ class MaxMind
         }
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($http_code != 200) {
-            throw new \Magento\Framework\Exception\LocalizedException(__('Fail download file. Http code: ') . $http_code);
+            throw new \Magento\Framework\Exception\LocalizedException(__('Fail download file. Http code: %1', $http_code) );
         }
         curl_close($ch);
 

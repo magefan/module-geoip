@@ -6,7 +6,7 @@
 ?>
 
 <div class="pp-buttons-container">
-    <button id="<?php echo $block->getId() ?>" onclick="return true;">
-        <span><span><span><?php echo $block->escapeHtml($block->getButtonLabel()); ?></span></span></span>
+    <button type="button" onclick="window.location='<?= $block->getUrl('mfgeoip/maxmind/update') ?>'">
+        <span><span><span><?= $block->escapeHtml(_('Update MaxMind GeoIP Data Base')); ?></span></span></span>
     </button>
 </div>
