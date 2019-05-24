@@ -55,7 +55,11 @@ class IpToCountryRepository
 
             if (!$this->ipToCountry[$ip]) {
                 try {
-                    $datFile = realpath(dirname(__FILE__) . '/../data/GeoLite2-Country.mmdb');
+                    if (file_exists(realpath(dirname(__FILE__) . '/../../../../../var/magefan/geoip/GeoLite2-Country.mmdb'))) {
+                        $datFile = realpath(dirname(__FILE__) . '/../../../../../var/magefan/geoip/GeoLite2-Country.mmdb');
+                    } else {
+                        $datFile = realpath(dirname(__FILE__) . '/../data/GeoLite2-Country.mmdb');
+                    }
                     $reader = new \GeoIp2\Database\Reader($datFile);
                     $record = $reader->country($ip);
 

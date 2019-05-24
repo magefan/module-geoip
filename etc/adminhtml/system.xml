@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magefan (support@magefan.com). All rights reserved.
+ * Please visit Magefan.com for license details (https://magefan.com/end-user-license-agreement).
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="magefan" translate="label" sortOrder="10">
+            <label>MageFan Extensions</label>
+        </tab>
+        <section id="geoip" translate="label" sortOrder="130" showInDefault="1" showInWebsite="0" showInStore="0">
+        <class>separator-top</class>
+        <label>GeoIp</label>
+        <tab>magefan</tab>
+        <resource>Magefan_GeoIp::geo_ip</resource>
+        <group id="geoip" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>GeoIp</label>
+            <attribute type="expanded">1</attribute>
+            <field id="version" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <frontend_model>Magefan\GeoIp\Block\Adminhtml\System\Config\Form\Info</frontend_model>
+            </field>
+        </group>
+            <group id="update_geoip" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Update MaxMind GeoIP Data Base</label>
+                <attribute type="expanded">1</attribute>
+                <field id="maxmind" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>Magefan\GeoIp\Block\Adminhtml\System\Config\Form\MaxMindInfo</frontend_model>
+                </field>
+                <field id="listbutton" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>Magefan\GeoIp\Block\Adminhtml\System\Config\Form\Button</frontend_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
