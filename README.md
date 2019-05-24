@@ -70,7 +70,9 @@ The code is licensed under [Open Software License ("OSL") v. 3.0](http://opensou
 This product includes GeoLite2 data created by MaxMind, available from
 <a href="https://www.maxmind.com">https://www.maxmind.com</a>.
 
-## Originaly use this database
+## Originaly use this databases:
+https://www.maxmind.com
+
 http://software77.net/geo-ip/
 
 ## Other Magefan Extensions That Can Be Installed Via Composer
