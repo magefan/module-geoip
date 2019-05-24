@@ -66,20 +66,6 @@ class MaxMind
      * @throws \Magento\Framework\Exception\FileSystemException
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function install()
-    {
-        $this->createDir($this->_dir->getPath('var') . '/magefan/geoip');
-        $filePath  = $this->_dir->getPath('app') . '/code/Magefan/GeoIp/data/GeoLite2-Country.mmdb';
-        $copyFileFullPath  = $this->_dir->getPath('var'). '/magefan/geoip/GeoLite2-Country.mmdb';
-        $result = $this->_file->cp($filePath, $copyFileFullPath);
-        return $result;
-    }
-
-    /**
-     * @return bool
-     * @throws \Magento\Framework\Exception\FileSystemException
-     * @throws \Magento\Framework\Exception\LocalizedException
-     */
     public function update()
     {
         $dbPath = $this->_dir->getPath('var') . '/magefan/geoip';

@@ -54,9 +54,9 @@ class Update extends \Magento\Backend\App\Action
     {
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         if ($this->maxMind->update()) {
-            $this->messageManager->addSuccessMessage('Database MaxMind was downloaded.');
+            $this->messageManager->addSuccessMessage('MaxMind GeoIP Database has been updated successfully.');
         } else {
-            $this->messageManager->addErrorMessage('Something wrong when downloading a database file.');
+            $this->messageManager->addErrorMessage('Something went wrong while updating the GeoIP database.');
         }
 
         $resultRedirect->setUrl($this->_redirect->getRefererUrl());

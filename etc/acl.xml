@@ -13,7 +13,7 @@
                 <resource id="Magento_Backend::stores">
                     <resource id="Magento_Backend::stores_settings">
                         <resource id="Magento_Config::config">
-                            <resource id="Magefan_GeoIp::geo_ip" title="GeoIp" sortOrder="15" />
+                            <resource id="Magefan_GeoIp::geo_ip" title="GeoIP Database Section" sortOrder="15" />
                         </resource>
                     </resource>
                 </resource>
