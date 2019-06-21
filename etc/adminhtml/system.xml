@@ -22,10 +22,11 @@
                 <field id="version" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <frontend_model>Magefan\GeoIp\Block\Adminhtml\System\Config\Form\Info</frontend_model>
                 </field>
-                <field id="ip_location" translate="label comment" type="text" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="ip_location" translate="label comment" type="text" sortOrder="12" showInDefault="1" showInWebsite="1" showInStore="1">
                     <frontend_model>Magefan\GeoIp\Block\Adminhtml\System\Config\Form\IpInfo</frontend_model>
                 </field>
             </group>
+
             <group id="update_geoip" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>MaxMind GeoIP Database</label>
                 <attribute type="expanded">1</attribute>
@@ -34,6 +35,23 @@
                 </field>
                 <field id="listbutton" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <frontend_model>Magefan\GeoIp\Block\Adminhtml\System\Config\Form\Button</frontend_model>
+                </field>
+            </group>
+            <group id="cloudflare" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>CloudFlare IP Geolocation</label>
+                <attribute type="expanded">1</attribute>
+                <field id="cloudflare_check" translate="label comment" type="text" sortOrder="13" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>Magefan\GeoIp\Block\Adminhtml\System\Config\Form\CloudflareCheck</frontend_model>
+                </field>
+                <field id="cloudflare_ip_enable" translate="label comment" type="select" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable CloudFlare IP Geolocation</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[
+                           <div id="enable_cloudflare_ip" style="display:none;">This option will be ignored as you do not use <a href="https://www.cloudflare.com/" target="_blank">Cloudflare</a> for the website or <a href="https://support.cloudflare.com/hc/en-us/articles/200168236-What-does-Cloudflare-IP-Geolocation-do-" target="_blank">IP Geolocation</a> is disabled in your Cloudflare account.
+                            <br/>
+                            <strong>Note that without this option GeoLocation detection also works properly.</strong></div>
+                        ]]>
+                    </comment>
                 </field>
             </group>
         </section>

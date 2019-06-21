@@ -13,6 +13,11 @@ namespace Magefan\GeoIp\Model;
 class IpToCountryRepository
 {
     /**
+     * Default path in system.xml
+     */
+    const XML_PATH_CLOUDFLARE_ENABLED  = 'geoip/cloudflare/cloudflare_ip_enable';
+
+    /**
      * @var \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress
      */
     protected $remoteAddress;
@@ -28,16 +33,32 @@ class IpToCountryRepository
     protected $ipToCountry = [];
 
     /**
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     */
+    protected $config;
+
+    /**
+     * @var \Magento\Framework\App\RequestInterface
+     */
+    protected $request;
+
+    /**
      * IpToCountryRepository constructor.
      * @param \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress
      * @param ResourceModel\IpToCountry\CollectionFactory $ipToCountryCollectionFactory
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $config
+     * @param \Magento\Framework\App\RequestInterface $httpRequest
      */
     public function __construct(
         \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress,
-        ResourceModel\IpToCountry\CollectionFactory $ipToCountryCollectionFactory
+        ResourceModel\IpToCountry\CollectionFactory $ipToCountryCollectionFactory,
+        \Magento\Framework\App\Config\ScopeConfigInterface $config,
+        \Magento\Framework\App\RequestInterface $httpRequest
     ) {
         $this->remoteAddress = $remoteAddress;
         $this->ipToCountryCollectionFactory = $ipToCountryCollectionFactory;
+        $this->config = $config;
+        $this->request = $httpRequest;
     }
 
     /**
@@ -49,6 +70,13 @@ class IpToCountryRepository
     {
         if (!isset($this->ipToCountry[$ip])) {
             $this->ipToCountry[$ip] = false;
+
+            $cloudflareEnable = $this->config->getValue(self::XML_PATH_CLOUDFLARE_ENABLED, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+            if ($cloudflareEnable) {
+                $country_code = $this->request->getServer('HTTP_CF_IPCOUNTRY');
+                $this->ipToCountry[$ip] = $country_code;
+            }
+
             if (function_exists('geoip_country_code_by_name')) {
                 $this->ipToCountry[$ip] = geoip_country_code_by_name($ip);
             }
