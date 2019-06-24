@@ -47,9 +47,9 @@
                     <label>Enable CloudFlare IP Geolocation</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment><![CDATA[
-                           <div id="enable_cloudflare_ip" style="display:none;">This option will be ignored as you do not use <a href="https://www.cloudflare.com/" target="_blank">Cloudflare</a> for the website or <a href="https://support.cloudflare.com/hc/en-us/articles/200168236-What-does-Cloudflare-IP-Geolocation-do-" target="_blank">IP Geolocation</a> is disabled in your Cloudflare account.
+                           <div id="enable_cloudflare_ip" style="display:none;"><strong>Attention!</strong> This option will be ignored as you do not use <a href="https://www.cloudflare.com/" target="_blank">Cloudflare</a> for the website or <a href="https://support.cloudflare.com/hc/en-us/articles/200168236-What-does-Cloudflare-IP-Geolocation-do-" target="_blank">IP Geolocation</a> is disabled in your Cloudflare account.
                             <br/>
-                            <strong>Note that without this option GeoLocation detection also works properly.</strong></div>
+                            <strong><em>Note that without this option GeoLocation detection also works properly.</em></strong></div>
                         ]]>
                     </comment>
                 </field>
