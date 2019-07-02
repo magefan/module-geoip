@@ -13,6 +13,11 @@ namespace Magefan\GeoIp\Model;
 class IpToCountryRepository
 {
     /**
+     * Default path in system.xml
+     */
+    const XML_PATH_CLOUDFLARE_ENABLED  = 'geoip/cloudflare/cloudflare_ip_enable';
+
+    /**
      * @var \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress
      */
     protected $remoteAddress;
@@ -28,16 +33,38 @@ class IpToCountryRepository
     protected $ipToCountry = [];
 
     /**
+     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     */
+    protected $config;
+
+    /**
+     * @var \Magento\Framework\App\RequestInterface
+     */
+    protected $request;
+
+    /**
      * IpToCountryRepository constructor.
      * @param \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress
      * @param ResourceModel\IpToCountry\CollectionFactory $ipToCountryCollectionFactory
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $config
+     * @param \Magento\Framework\App\RequestInterface $httpRequest
      */
     public function __construct(
         \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress,
-        ResourceModel\IpToCountry\CollectionFactory $ipToCountryCollectionFactory
+        ResourceModel\IpToCountry\CollectionFactory $ipToCountryCollectionFactory,
+        $config = null,
+        $httpRequest = null
     ) {
         $this->remoteAddress = $remoteAddress;
         $this->ipToCountryCollectionFactory = $ipToCountryCollectionFactory;
+
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $this->config = $config ?: $objectManager->get(
+            \Magento\Framework\App\Config\ScopeConfigInterface::class
+        );
+        $this->request = $httpRequest ?: $objectManager->get(
+            \Magento\Framework\App\RequestInterface::class
+        );
     }
 
     /**
@@ -49,8 +76,19 @@ class IpToCountryRepository
     {
         if (!isset($this->ipToCountry[$ip])) {
             $this->ipToCountry[$ip] = false;
-            if (function_exists('geoip_country_code_by_name')) {
-                $this->ipToCountry[$ip] = geoip_country_code_by_name($ip);
+
+            $cloudflareEnable = $this->config->getValue(self::XML_PATH_CLOUDFLARE_ENABLED, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+            if ($cloudflareEnable) {
+                $countryCode = $this->request->getServer('HTTP_CF_IPCOUNTRY');
+                if ($countryCode) {
+                    $this->ipToCountry[$ip] = $countryCode;
+                }
+            }
+
+            if (!$this->ipToCountry[$ip]) {
+                if (function_exists('geoip_country_code_by_name')) {
+                    $this->ipToCountry[$ip] = geoip_country_code_by_name($ip);
+                }
             }
 
             if (!$this->ipToCountry[$ip]) {
