@@ -2,10 +2,11 @@
     "name": "magefan/module-geoip",
     "description": "Allows to get country code by IP",
     "require": {
+        "magefan/module-community" : ">=2.0.5",
         "geoip2/geoip2": "^2.9.0"
     },
     "type": "magento2-module",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "autoload": {
         "psr-4": {
             "Magefan\\GeoIp\\": ""
