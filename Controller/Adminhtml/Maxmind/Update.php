@@ -20,29 +20,23 @@ class Update extends \Magento\Backend\App\Action
      * @see _isAllowed()
      */
     const ADMIN_RESOURCE = 'Magefan_GeoIp::geo_ip';
+
     /**
      * @var \Magefan\GeoIp\Model\GeoIpDatabase\MaxMind
      */
     protected $maxMind;
-    /**
-     * @var \Magento\Framework\Message\ManagerInterface
-     */
-    protected $messageManager;
 
     /**
      * Update constructor.
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Magefan\GeoIp\Model\GeoIpDatabase\MaxMind $maxMind
-     * @param \Magento\Framework\Message\ManagerInterface $messageManager
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
-        \Magefan\GeoIp\Model\GeoIpDatabase\MaxMind $maxMind,
-        \Magento\Framework\Message\ManagerInterface $messageManager
+        \Magefan\GeoIp\Model\GeoIpDatabase\MaxMind $maxMind
     ) {
         parent::__construct($context);
         $this->maxMind = $maxMind;
-        $this->messageManager = $messageManager;
     }
 
     /**
