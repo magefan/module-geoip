@@ -101,4 +101,6 @@ http://software77.net/geo-ip/
   * [Magento Twitter Cards Extension](https://magefan.com/magento-2-twitter-cards-extension)
   * [Magento 2 Mautic Integration Extension](https://magefan.com/magento-2-mautic-extension)
   * [Magento 2 Alternate Hreflang Extension](https://magefan.com/magento2-alternate-hreflang-extension)
-* [Magento 2 Dynamic Categories](https://magefan.com/magento-2-dynamic-categories)
+  * [Magento 2 Dynamic Categories](https://magefan.com/magento-2-dynamic-categories)
+  * [Magento 2 CMS Display Rules Extension](https://magefan.com/magento-2-cms-display-rules-extension)
+  * [Magento 2 Zero Downtime Deployment](https://magefan.com/blog/magento-2-zero-downtime-deployment)
