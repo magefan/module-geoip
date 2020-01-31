@@ -88,7 +88,8 @@ class IpToCountryRepository
             if (!$this->ipToCountry[$ip]) {
                 if (function_exists('geoip_country_code_by_name')) {
                     $rf = new \ReflectionFunction('geoip_country_code_by_name');
-                    if (1 == count($rf->getParameters())) { /* Fix for custom geoip php libraries */
+                    $params = $rf->getParameters();
+                    if (!$params || !is_array($params) || count($params) < 2) { /* Fix for custom geoip php libraries, so 0 or 1 params */
                         $this->ipToCountry[$ip] = geoip_country_code_by_name($ip);
                     }
                 }
