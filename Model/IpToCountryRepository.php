@@ -90,7 +90,11 @@ class IpToCountryRepository
                     $rf = new \ReflectionFunction('geoip_country_code_by_name');
                     $params = $rf->getParameters();
                     if (!$params || !is_array($params) || count($params) < 2) { /* Fix for custom geoip php libraries, so 0 or 1 params */
-                        $this->ipToCountry[$ip] = geoip_country_code_by_name($ip);
+                        try {
+                            $this->ipToCountry[$ip] = geoip_country_code_by_name($ip);    
+                        } catch (\Exception $e) {
+                            //do nothing
+                        }
                     }
                 }
             }
