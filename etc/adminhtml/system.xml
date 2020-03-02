@@ -54,6 +54,22 @@
                     </comment>
                 </field>
             </group>
+
+            <group id="developer" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Developer (Simulate Geolocation)</label>
+                <attribute type="expanded">1</attribute>
+                <field id="allow_ips" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Allowed IPs (comma separated)</label>
+                </field>
+                <field id="simulate_country" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Simulate Country</label>
+                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                    <comment><![CDATA[
+                           Developers with allowed IPs will be recognized as visitors from this country.
+                        ]]>
+                    </comment>
+                </field>
+            </group>
         </section>
     </system>
 </config>

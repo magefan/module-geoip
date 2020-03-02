@@ -6,6 +6,8 @@
 
 namespace Magefan\GeoIp\Model;
 
+use Magento\Store\Model\ScopeInterface;
+
 /**
  * Class IpToCountryRepository
  * @package Magefan\GeoIp\Model
@@ -16,6 +18,16 @@ class IpToCountryRepository
      * Default path in system.xml
      */
     const XML_PATH_CLOUDFLARE_ENABLED  = 'geoip/cloudflare/cloudflare_ip_enable';
+
+    /**
+     * Allow IPs path in system.xml
+     */
+    const XML_PATH_ALLOW_IPS  = 'geoip/developer/allow_ips';
+
+    /**
+     * Simulate country path in system.xml
+     */
+    const XML_PATH_SIMULATE_COUNTRY  = 'geoip/developer/simulate_country';
 
     /**
      * @var \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress
@@ -77,7 +89,19 @@ class IpToCountryRepository
         if (!isset($this->ipToCountry[$ip])) {
             $this->ipToCountry[$ip] = false;
 
-            $cloudflareEnable = $this->config->getValue(self::XML_PATH_CLOUDFLARE_ENABLED, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+            $simulateCountry = $this->config->getValue(self::XML_PATH_SIMULATE_COUNTRY, ScopeInterface::SCOPE_STORE);
+            if ($simulateCountry) {
+                $allowedIPs = explode(',', $this->config->getValue(self::XML_PATH_ALLOW_IPS, ScopeInterface::SCOPE_STORE));
+                foreach ($allowedIPs as $allowedIp) {
+                    $allowedIp = trim($allowedIp);
+                    if ($allowedIp && $allowedIp == $ip) {
+                       $this->ipToCountry[$ip] = $simulateCountry;
+                       return $this->ipToCountry[$ip];
+                    }
+                }
+            }
+
+            $cloudflareEnable = $this->config->getValue(self::XML_PATH_CLOUDFLARE_ENABLED, ScopeInterface::SCOPE_STORE);
             if ($cloudflareEnable) {
                 $countryCode = $this->request->getServer('HTTP_CF_IPCOUNTRY');
                 if ($countryCode) {
