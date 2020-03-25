@@ -7,11 +7,6 @@ This Magento 2 GeoIP module provides you PHP methods for getting customer countr
 
 It is used for [Magento 2 Currency Auto Switcher](https://magefan.com/magento-2-currency-switcher-auto-currency-by-country) and [Magento 2 Auto Language Switcher](https://magefan.com/magento-2-auto-language-switcher) by Magefan
 
-  <a href="https://magefan.com/magento-2-currency-switcher-auto-currency-by-country">
-          <img
-            src="https://magefan.com/media/catalog/product/m/a/magento2-geo-ip-detection.png"
-            alt="Magento 2 Blog Editions & Pricing" />
-          </a>
 
 ## Requirements
   * Magento Community Edition 2.0.x-2.3.x or Magento Enterprise Edition 2.0.x-2.3.x
