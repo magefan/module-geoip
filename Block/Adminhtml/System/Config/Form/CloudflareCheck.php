@@ -26,7 +26,7 @@ class CloudflareCheck extends \Magento\Config\Block\System\Config\Form\Field
             "jquery",
             "domReady!"
         ], function($){
-            $("#geoip_cloudflare_cloudflare_ip_enable").change(function() {
+            $("#mfgeoip_cloudflare_cloudflare_ip_enable").change(function() {
                 var val = parseInt($(this).val());
                 if (val) {
                     $("#enable_cloudflare_ip").show();

@@ -17,17 +17,17 @@ class IpToCountryRepository
     /**
      * Default path in system.xml
      */
-    const XML_PATH_CLOUDFLARE_ENABLED  = 'mf_geoip/cloudflare/cloudflare_ip_enable';
+    const XML_PATH_CLOUDFLARE_ENABLED  = 'mfgeoip/cloudflare/cloudflare_ip_enable';
 
     /**
      * Allow IPs path in system.xml
      */
-    const XML_PATH_ALLOW_IPS  = 'mf_geoip/developer/allow_ips';
+    const XML_PATH_ALLOW_IPS  = 'mfgeoip/developer/allow_ips';
 
     /**
      * Simulate country path in system.xml
      */
-    const XML_PATH_SIMULATE_COUNTRY  = 'mf_geoip/developer/simulate_country';
+    const XML_PATH_SIMULATE_COUNTRY  = 'mfgeoip/developer/simulate_country';
 
     /**
      * @var \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress

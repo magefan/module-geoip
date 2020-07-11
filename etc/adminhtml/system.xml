@@ -11,7 +11,7 @@
         <tab id="magefan" sortOrder="110" translate="label">
             <label>Magefan Extensions</label>
         </tab>
-        <section id="mf_geoip" translate="label" sortOrder="130" showInDefault="1" showInWebsite="0" showInStore="0">
+        <section id="mfgeoip" translate="label" sortOrder="130" showInDefault="1" showInWebsite="0" showInStore="0">
             <class>separator-top</class>
             <label>GeoIP Database</label>
             <tab>magefan</tab>

@@ -8,10 +8,10 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
-        <mf_geoip>
+        <mfgeoip>
             <cloudflare>
                 <cloudflare_ip_enable>1</cloudflare_ip_enable>
             </cloudflare>
-        </mf_geoip>
+        </mfgeoip>
     </default>
 </config>
