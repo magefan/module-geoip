@@ -9,7 +9,7 @@ It is used for [Magento 2 Currency Auto Switcher](https://magefan.com/magento-2-
 
 
 ## Requirements
-  * Magento Community Edition 2.0.x-2.3.x or Magento Enterprise Edition 2.0.x-2.3.x
+  * Magento Community Edition 2.0.x-2.4.0 or Magento Enterprise Edition 2.0.x-2.4.0
 
 ## Installation Method 1 - Installing via composer
   * Open command line
