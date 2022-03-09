@@ -3,6 +3,9 @@
 [![Total Downloads](https://poser.pugx.org/magefan/module-geoip/downloads)](https://packagist.org/packages/magefan/module-geoip)
 [![Latest Stable Version](https://poser.pugx.org/magefan/module-geoip/v/stable)](https://packagist.org/packages/magefan/module-geoip)
 
+<img width="150" height="100" src="https://magefan.com/media/wysiwyg/made_in_ukraine.jpg">
+
+
 This Magento 2 GeoIP module provides you PHP methods for getting customer country by IP, without any additional plugin for PHP.
 
 It is used for [Magento 2 Currency Auto Switcher](https://magefan.com/magento-2-currency-switcher-auto-currency-by-country) and [Magento 2 Auto Language Switcher](https://magefan.com/magento-2-auto-language-switcher) by Magefan
