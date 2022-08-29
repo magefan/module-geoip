@@ -7,6 +7,8 @@
 namespace Magefan\GeoIp\Model;
 
 use Magento\Store\Model\ScopeInterface;
+use Magento\Framework\Filesystem\DirectoryList;
+use Magento\Framework\Module\Dir as ModuleDir;
 
 /**
  * Class IpToCountryRepository
@@ -55,20 +57,36 @@ class IpToCountryRepository
     protected $request;
 
     /**
+     * @var DirectoryList
+     */
+    private $directoryList;
+
+    /**
+     * @var ModuleDir
+     */
+    private $moduleDir;
+
+    /**
      * IpToCountryRepository constructor.
      * @param \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress
      * @param ResourceModel\IpToCountry\CollectionFactory $ipToCountryCollectionFactory
+     * @param DirectoryList $directoryList
+     * @param ModuleDir $moduleDir
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $config
      * @param \Magento\Framework\App\RequestInterface $httpRequest
      */
     public function __construct(
         \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress,
         ResourceModel\IpToCountry\CollectionFactory $ipToCountryCollectionFactory,
+        DirectoryList $directoryList,
+        ModuleDir $moduleDir,
         $config = null,
         $httpRequest = null
     ) {
         $this->remoteAddress = $remoteAddress;
         $this->ipToCountryCollectionFactory = $ipToCountryCollectionFactory;
+        $this->directoryList = $directoryList;
+        $this->moduleDir = $moduleDir;
 
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->config = $config ?: $objectManager->get(
@@ -115,7 +133,7 @@ class IpToCountryRepository
                     $params = $rf->getParameters();
                     if (!$params || !is_array($params) || count($params) < 2) { /* Fix for custom geoip php libraries, so 0 or 1 params */
                         try {
-                            $this->ipToCountry[$ip] = geoip_country_code_by_name($ip);    
+                            $this->ipToCountry[$ip] = geoip_country_code_by_name($ip);
                         } catch (\Exception $e) {
                             //do nothing
                         }
@@ -125,10 +143,11 @@ class IpToCountryRepository
 
             if (!$this->ipToCountry[$ip]) {
                 try {
-                    if (file_exists(realpath(dirname(__FILE__) . '/../../../../../var/magefan/geoip/GeoLite2-Country.mmdb'))) {
-                        $datFile = realpath(dirname(__FILE__) . '/../../../../../var/magefan/geoip/GeoLite2-Country.mmdb');
+                    $filename = $this->directoryList->getPath('var') . DIRECTORY_SEPARATOR . 'magefan/geoip/GeoLite2-Country.mmdb';
+                    if (file_exists($filename)) {
+                        $datFile = $filename;
                     } else {
-                        $datFile = realpath(dirname(__FILE__) . '/../data/GeoLite2-Country.mmdb');
+                        $datFile = $this->moduleDir->getDir('Magefan_GeoIp') . '/data/GeoLite2-Country.mmdb';
                     }
                     $reader = new \GeoIp2\Database\Reader($datFile);
                     $record = $reader->country($ip);
