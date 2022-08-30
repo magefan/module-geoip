@@ -30,7 +30,6 @@ class Update extends \Magento\Backend\App\Action
      * Update constructor.
      * @param \Magento\Backend\App\Action\Context $context
      * @param \Magefan\GeoIp\Model\GeoIpDatabase\MaxMind $maxMind
-     * @param Config $config
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
