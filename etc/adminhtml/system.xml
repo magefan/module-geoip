@@ -34,7 +34,11 @@
                     <frontend_model>Magefan\GeoIp\Block\Adminhtml\System\Config\Form\MaxMindInfo</frontend_model>
                 </field>
                 <field id="key" translate="label comment" type="text" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0">
-                    <label>License Key</label>
+                    <label>License Key (optional)</label>
+                    <comment><![CDATA[
+                           Enter <a title="Generate a License Key" target="_blank" rel="nofollow noopener" href="https://support.maxmind.com/hc/en-us/articles/4407111582235-Generate-a-License-Key">MaxMind License Key</a> and save config to update the MaxMind GeoIP Database directly from MaxMind and not via the Magefan server.
+                        ]]>
+                    </comment>
                 </field>
                 <field id="listbutton" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <frontend_model>Magefan\GeoIp\Block\Adminhtml\System\Config\Form\Button</frontend_model>

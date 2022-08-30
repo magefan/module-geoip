@@ -96,6 +96,19 @@ class MaxMind
      */
     public function update()
     {
+        if ($this->config->getLicenseKey()) {
+            return $this->updateByAPI();
+        } else {
+            return $this->updateByMagefanServer();
+        }
+    }
+    /**
+     * @return bool
+     * @throws \Magento\Framework\Exception\FileSystemException
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function updateByMagefanServer()
+    {
         $dbPath = $this->_dir->getPath('var') . '/magefan/geoip';
         $this->createDir($dbPath);
         $url = self::URL;
@@ -106,18 +119,18 @@ class MaxMind
         //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         $result = curl_exec($ch);
         if (!$result) {
-            throw new \Magento\Framework\Exception\LocalizedException(__('Can not download file GeoLite2-Country.mmdb'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('Can not download GeoLite2-Country.mmdb file.'));
         }
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($http_code != 200) {
-            throw new \Magento\Framework\Exception\LocalizedException(__('Fail download file. Http code: %1', $http_code) );
+            throw new \Magento\Framework\Exception\LocalizedException(__('File download failed. Http code: %1.', $http_code) );
         }
         curl_close($ch);
 
         $output_filename = $dbPath . '/' . 'GeoLite2-Country.mmdb';
         $fp = fopen($output_filename, 'w');
         if (!fwrite($fp, $result)) {
-            throw new \Magento\Framework\Exception\LocalizedException(__('Can not save or overwrite file GeoLite2-Country.mmdb'));
+            throw new \Magento\Framework\Exception\LocalizedException(__('Can not save or overwrite GeoLite2-Country.mmdb file.'));
         }
         fclose($fp);
 
@@ -131,7 +144,7 @@ class MaxMind
      * @throws \Magento\Framework\Exception\FileSystemException
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function updateAPI()
+    private function updateByAPI()
     {
         $dbPath = $this->_dir->getPath('var') . '/magefan/geoip';
         $this->createDir($dbPath);
@@ -156,12 +169,16 @@ class MaxMind
         $response = curl_exec($ch);
 
         if (!$response) {
-            throw new \Magento\Framework\Exception\LocalizedException(__('Can not download archive GeoLite2-Country.tar.gz'));
+            throw new \Magento\Framework\Exception\LocalizedException(
+                __('Can not download GeoLite2-Country.tar.gz archive.')
+            );
         }
 
         $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         if ($http_code != 200) {
-            throw new \Magento\Framework\Exception\LocalizedException(__('Fail download archive. Http code: %1', $http_code));
+            throw new \Magento\Framework\Exception\LocalizedException(
+                __('File download failed. Http code: %1. Please check the license key.', $http_code)
+            );
         }
 
         curl_close($ch);
@@ -169,7 +186,7 @@ class MaxMind
         $unpackGz = $this->gz->unpack($outputFilename, $dbPath . DIRECTORY_SEPARATOR);
         $unpackTar = $this->tar->unpack($unpackGz, $dbPath . DIRECTORY_SEPARATOR);
         $dir = $this->_file->getDirectoriesList($unpackTar);
-        $this->_file->mv($dir[0], $unpackTar);
+        $this->_file->mv($dir[0] . '/GeoLite2-Country.mmdb', $unpackTar . 'GeoLite2-Country.mmdb');
 
         $this->_file->open(['path' => $unpackTar]);
         $list = $this->_file->ls();
