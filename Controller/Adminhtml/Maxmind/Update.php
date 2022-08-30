@@ -47,9 +47,13 @@ class Update extends \Magento\Backend\App\Action
     public function execute()
     {
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        if ($this->maxMind->update()) {
+
+        try {
+            $this->maxMind->update();
             $this->messageManager->addSuccessMessage('MaxMind GeoIP Database has been updated successfully.');
-        } else {
+        } catch (\Magento\Framework\Exception\LocalizedException $e) {
+            $this->messageManager->addErrorMessage($e->getMessage());
+        } catch (\Exception $e) {
             $this->messageManager->addErrorMessage('Something went wrong while updating the GeoIP database.');
         }
 

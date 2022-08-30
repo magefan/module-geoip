@@ -48,9 +48,14 @@ class MaxMindInfo extends \Magento\Config\Block\System\Config\Form\Field
     {
         $dirList = $this->_dir->getPath('var'). '/magefan/geoip/GeoLite2-Country.mmdb';
 
+        if (!file_exists($dirList)) {
+            try {
+                $this->maxMind->update();
+            } catch (\Exception $e) {
+            }
+        }
+
         if (file_exists($dirList)) {
-            $modified = date("F d, Y.", filemtime($dirList));
-        } elseif ($this->maxMind->update()) {
             $modified = date("F d, Y.", filemtime($dirList));
         } else {
             $modified = __('Can not download DB.');
