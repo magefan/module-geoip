@@ -33,6 +33,9 @@
                 <field id="maxmind" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <frontend_model>Magefan\GeoIp\Block\Adminhtml\System\Config\Form\MaxMindInfo</frontend_model>
                 </field>
+                <field id="key" translate="label comment" type="text" sortOrder="15" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>License Key</label>
+                </field>
                 <field id="listbutton" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <frontend_model>Magefan\GeoIp\Block\Adminhtml\System\Config\Form\Button</frontend_model>
                 </field>
