@@ -6,9 +6,13 @@
 
 namespace Magefan\GeoIp\Model;
 
+
 use Magento\Store\Model\ScopeInterface;
 use Magento\Framework\Filesystem\DirectoryList;
 use Magento\Framework\Module\Dir as ModuleDir;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
 
 /**
  * Class IpToCountryRepository
@@ -32,14 +36,9 @@ class IpToCountryRepository
     const XML_PATH_SIMULATE_COUNTRY  = 'mfgeoip/developer/simulate_country';
 
     /**
-     * @var \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress
+     * @var RemoteAddress
      */
     protected $remoteAddress;
-
-    /**
-     * @var ResourceModel\IpToCountry\CollectionFactory
-     */
-    protected $ipToCountryCollectionFactory;
 
     /**
      * @var array
@@ -47,12 +46,12 @@ class IpToCountryRepository
     protected $ipToCountry = [];
 
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     * @var ScopeConfigInterface
      */
     protected $config;
 
     /**
-     * @var \Magento\Framework\App\RequestInterface
+     * @var RequestInterface
      */
     protected $request;
 
@@ -68,33 +67,24 @@ class IpToCountryRepository
 
     /**
      * IpToCountryRepository constructor.
-     * @param \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress
-     * @param ResourceModel\IpToCountry\CollectionFactory $ipToCountryCollectionFactory
+     * @param RemoteAddress $remoteAddress
      * @param DirectoryList $directoryList
      * @param ModuleDir $moduleDir
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $config
-     * @param \Magento\Framework\App\RequestInterface $httpRequest
+     * @param ScopeConfigInterface $config
+     * @param RequestInterface $httpRequest
      */
     public function __construct(
-        \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress,
-        ResourceModel\IpToCountry\CollectionFactory $ipToCountryCollectionFactory,
+        RemoteAddress $remoteAddress,
         DirectoryList $directoryList,
         ModuleDir $moduleDir,
-        $config = null,
-        $httpRequest = null
+        ScopeConfigInterface $config,
+        RequestInterface $httpRequest
     ) {
         $this->remoteAddress = $remoteAddress;
-        $this->ipToCountryCollectionFactory = $ipToCountryCollectionFactory;
         $this->directoryList = $directoryList;
         $this->moduleDir = $moduleDir;
-
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $this->config = $config ?: $objectManager->get(
-            \Magento\Framework\App\Config\ScopeConfigInterface::class
-        );
-        $this->request = $httpRequest ?: $objectManager->get(
-            \Magento\Framework\App\RequestInterface::class
-        );
+        $this->config = $config;
+        $this->request = $httpRequest;
     }
 
     /**
@@ -156,16 +146,6 @@ class IpToCountryRepository
                         $this->ipToCountry[$ip] = $record->country->isoCode;
                     }
                 } catch (\Exception $e) {}
-            }
-
-            if (!$this->ipToCountry[$ip]) {
-                $longIp = ip2long($ip);
-                $collection = $this->ipToCountryCollectionFactory->create();
-                $collection->addFieldToFilter('ip_from', ["lteq" => $longIp])
-                    ->addFieldToFilter('ip_to', ["gteq" => $longIp])
-                    ->setPageSize(1);
-                $ipInfo = $collection->getFirstItem();
-                $this->ipToCountry[$ip] = $ipInfo->getCountryCode() ?: false;
             }
         }
 
