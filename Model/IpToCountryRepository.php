@@ -97,9 +97,9 @@ class IpToCountryRepository
         if (!isset($this->ipToCountry[$ip])) {
             $this->ipToCountry[$ip] = false;
 
-            $simulateCountry = $this->config->getValue(self::XML_PATH_SIMULATE_COUNTRY, ScopeInterface::SCOPE_STORE);
+            $simulateCountry = $this->config->getValue(self::XML_PATH_SIMULATE_COUNTRY, ScopeInterface::SCOPE_STORE) ?: '';
             if ($simulateCountry) {
-                $allowedIPs = explode(',', $this->config->getValue(self::XML_PATH_ALLOW_IPS, ScopeInterface::SCOPE_STORE));
+                $allowedIPs = explode(',', $this->config->getValue(self::XML_PATH_ALLOW_IPS, ScopeInterface::SCOPE_STORE) ?: '');
                 foreach ($allowedIPs as $allowedIp) {
                     $allowedIp = trim($allowedIp);
                     if ($allowedIp && $allowedIp == $ip) {
