@@ -11,7 +11,7 @@
         <tab id="magefan" sortOrder="110" translate="label">
             <label>Magefan Extensions</label>
         </tab>
-        <section id="mfgeoip" translate="label" sortOrder="130" showInDefault="1" showInWebsite="0" showInStore="0">
+        <section id="mfgeoip" translate="label" sortOrder="10413272670" showInDefault="1" showInWebsite="0" showInStore="0">
             <class>separator-top</class>
             <label>GeoIP Database</label>
             <tab>magefan</tab>
@@ -50,7 +50,7 @@
                 <field id="cloudflare_check" translate="label comment" type="text" sortOrder="13" showInDefault="1" showInWebsite="1" showInStore="1">
                     <frontend_model>Magefan\GeoIp\Block\Adminhtml\System\Config\Form\CloudflareCheck</frontend_model>
                 </field>
-                <field id="cloudflare_ip_enable" translate="label comment" type="select" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="cloudflare_ip_enable" translate="label comment" type="select" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Enable CloudFlare IP Geolocation</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment><![CDATA[
@@ -65,10 +65,10 @@
             <group id="developer" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Developer (Simulate Geolocation)</label>
                 <attribute type="expanded">1</attribute>
-                <field id="allow_ips" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <field id="allow_ips" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Allowed IPs (comma separated)</label>
                 </field>
-                <field id="simulate_country" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                <field id="simulate_country" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
                     <label>Simulate Country</label>
                     <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                     <comment><![CDATA[

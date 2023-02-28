@@ -12,6 +12,10 @@
             <cloudflare>
                 <cloudflare_ip_enable>1</cloudflare_ip_enable>
             </cloudflare>
+            <developer>
+                <allow_ips/>
+                <simulate_country/>
+            </developer>
         </mfgeoip>
     </default>
 </config>
