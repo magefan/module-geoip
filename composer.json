@@ -2,7 +2,7 @@
     "name": "magefan/module-geoip",
     "description": "Allows to get country code by IP",
     "require": {
-        "magefan/module-community" : ">=2.1.12",
+        "magefan/module-community" : ">=2.1.16",
         "geoip2/geoip2": "^2.9.0"
     },
     "suggest": {
