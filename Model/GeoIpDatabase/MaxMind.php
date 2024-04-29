@@ -19,7 +19,11 @@ class MaxMind
      * Url
      */
     const URL = 'https://magefan.com/media/geoip/GeoLite2-Country.mmdb';
+
+    const URL_CITY = 'https://magefan.com/media/geoip/GeoLite2-City.mmdb';
+
     const URL_API = 'https://download.maxmind.com/app/geoip_download';
+
     /**
      * @var \Magento\Framework\Filesystem\DirectoryList
      */
@@ -111,28 +115,33 @@ class MaxMind
     {
         $dbPath = $this->_dir->getPath('var') . '/magefan/geoip';
         $this->createDir($dbPath);
-        $url = self::URL;
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        $result = curl_exec($ch);
-        if (!$result) {
-            throw new \Magento\Framework\Exception\LocalizedException(__('Can not download GeoLite2-Country.mmdb file.'));
-        }
-        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        if ($http_code != 200) {
-            throw new \Magento\Framework\Exception\LocalizedException(__('File download failed. Http code: %1.', $http_code) );
-        }
-        curl_close($ch);
+        foreach ([self::URL, self::URL_CITY] as $url) {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-        $output_filename = $dbPath . '/' . 'GeoLite2-Country.mmdb';
-        $fp = fopen($output_filename, 'w');
-        if (!fwrite($fp, $result)) {
-            throw new \Magento\Framework\Exception\LocalizedException(__('Can not save or overwrite GeoLite2-Country.mmdb file.'));
+            $result = curl_exec($ch);
+            if (!$result) {
+                throw new \Magento\Framework\Exception\LocalizedException(__('Can not download GeoLite2-Country.mmdb file.'));
+            }
+
+            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            if ($http_code != 200) {
+                throw new \Magento\Framework\Exception\LocalizedException(__('File download failed. Http code: %1.', $http_code) );
+            }
+
+            curl_close($ch);
+
+            $urlArray = explode('/', $url);
+            $output_filename = $dbPath . '/' . end($urlArray);
+
+            $fp = fopen($output_filename, 'w');
+            if (!fwrite($fp, $result)) {
+                throw new \Magento\Framework\Exception\LocalizedException(__('Can not save or overwrite GeoLite2-Country.mmdb file.'));
+            }
+            fclose($fp);
         }
-        fclose($fp);
 
         return true;
     }
@@ -148,60 +157,63 @@ class MaxMind
     {
         $dbPath = $this->_dir->getPath('var') . '/magefan/geoip';
         $this->createDir($dbPath);
-        $url = self::URL_API . '?' . http_build_query([
-            'edition_id' => 'GeoLite2-Country',
-            'suffix' => 'tar.gz',
-            'license_key' => $this->config->getLicenseKey()
-        ]);
 
-        $ch = curl_init($url);
+        foreach (['GeoLite2-Country', 'GeoLite2-City'] as $file) {
+            $url = self::URL_API . '?' . http_build_query([
+                    'edition_id' => $file,
+                    'suffix' => 'tar.gz',
+                    'license_key' => $this->config->getLicenseKey()
+                ]);
 
-        $outputFilename = $dbPath . DIRECTORY_SEPARATOR . 'GeoLite2-Country.tar.gz';
-        $fp = fopen($outputFilename, 'wb');
+            $ch = curl_init($url);
 
-        curl_setopt_array($ch, array(
-            CURLOPT_HTTPGET => true,
-            CURLOPT_BINARYTRANSFER => true,
-            CURLOPT_HEADER => false,
-            CURLOPT_FILE => $fp,
-        ));
+            $outputFilename = $dbPath . DIRECTORY_SEPARATOR . $file . '.tar.gz';
+            $fp = fopen($outputFilename, 'wb');
 
-        $response = curl_exec($ch);
+            curl_setopt_array($ch, array(
+                CURLOPT_HTTPGET => true,
+                CURLOPT_BINARYTRANSFER => true,
+                CURLOPT_HEADER => false,
+                CURLOPT_FILE => $fp,
+            ));
 
-        if (!$response) {
-            throw new \Magento\Framework\Exception\LocalizedException(
-                __('Can not download GeoLite2-Country.tar.gz archive.')
-            );
-        }
+            $response = curl_exec($ch);
 
-        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        if ($http_code != 200) {
-            throw new \Magento\Framework\Exception\LocalizedException(
-                __('File download failed. Http code: %1. Please check the license key.', $http_code)
-            );
-        }
-
-        curl_close($ch);
-
-        $unpackGz = $this->gz->unpack($outputFilename, $dbPath . DIRECTORY_SEPARATOR);
-        $unpackTar = $this->tar->unpack($unpackGz, $dbPath . DIRECTORY_SEPARATOR);
-        $dir = $this->_file->getDirectoriesList($unpackTar);
-        $this->_file->mv($dir[0] . '/GeoLite2-Country.mmdb', $unpackTar . 'GeoLite2-Country.mmdb');
-
-        $this->_file->open(['path' => $unpackTar]);
-        $list = $this->_file->ls();
-        $this->_file->close();
-
-        foreach ($list as $info) {
-            if ($info['text'] !== 'GeoLite2-Country.mmdb') {
-                if (isset($info['id'])) {
-                    $this->_file->rmdirRecursive($info['id']);
-                }
-                $this->_file->rm($info['text']);
+            if (!$response) {
+                throw new \Magento\Framework\Exception\LocalizedException(
+                    __('Can not download ' . $file . '.tar.gz archive.')
+                );
             }
-        }
 
-        fclose($fp);
+            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            if ($http_code != 200) {
+                throw new \Magento\Framework\Exception\LocalizedException(
+                    __('File download failed. Http code: %1. Please check the license key.', $http_code)
+                );
+            }
+
+            curl_close($ch);
+
+            $unpackGz = $this->gz->unpack($outputFilename, $dbPath . DIRECTORY_SEPARATOR);
+            $unpackTar = $this->tar->unpack($unpackGz, $dbPath . DIRECTORY_SEPARATOR);
+            $dir = $this->_file->getDirectoriesList($unpackTar);
+            $this->_file->mv($dir[0] . '/' . $file . '.mmdb', $unpackTar . $file . '.mmdb');
+
+            $this->_file->open(['path' => $unpackTar]);
+            $list = $this->_file->ls();
+            $this->_file->close();
+
+            foreach ($list as $info) {
+                if (!in_array($info['text'], ['GeoLite2-Country.mmdb', 'GeoLite2-City.mmdb'])) {
+                    if (isset($info['id'])) {
+                        $this->_file->rmdirRecursive($info['id']);
+                    }
+                    $this->_file->rm($info['text']);
+                }
+            }
+
+            fclose($fp);
+        }
 
         return true;
     }

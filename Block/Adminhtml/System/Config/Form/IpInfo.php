@@ -4,9 +4,12 @@
  * See LICENSE.txt for license details (http://opensource.org/licenses/osl-3.0.php).
  */
 
+declare(strict_types=1);
+
 namespace Magefan\GeoIp\Block\Adminhtml\System\Config\Form;
 
-use Magefan\GeoIp\Model\IpToCountryRepository;
+use Magefan\GeoIp\Api\IpToCountryRepositoryInterface;
+use Magefan\GeoIp\Api\IpToRegionRepositoryInterface;
 
 /**
  * Admin configurations IP information block
@@ -14,21 +17,30 @@ use Magefan\GeoIp\Model\IpToCountryRepository;
 class IpInfo extends \Magento\Config\Block\System\Config\Form\Field
 {
     /**
-     * @var \Magefan\GeoIp\Model\IpToCountryRepository
+     * @var IpToCountryRepositoryInterface
      */
-    protected $ipRepository;
+    protected $ipToCountryRepository;
+
+    /**
+     * @var IpToRegionRepositoryInterface
+     */
+    protected $ipToRegionRepository;
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context
+     * @param IpToCountryRepositoryInterface $ipToCountryRepository
+     * @param IpToRegionRepositoryInterface $ipToRegionRepository
      * @param array $data
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
-        IpToCountryRepository $ipRepository,
+        IpToCountryRepositoryInterface $ipToCountryRepository,
+        IpToRegionRepositoryInterface $ipToRegionRepository,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->ipRepository = $ipRepository;
+        $this->ipToCountryRepository = $ipToCountryRepository;
+        $this->ipToRegionRepository = $ipToRegionRepository;
     }
 
     /**
@@ -38,16 +50,18 @@ class IpInfo extends \Magento\Config\Block\System\Config\Form\Field
      */
     public function render(\Magento\Framework\Data\Form\Element\AbstractElement $element)
     {
-        $country =  $this->ipRepository->getVisitorCountryCode();
+        $country =  $this->ipToCountryRepository->getVisitorCountryCode();
         if ($country == "ZZ") {
             $country = 'Undefined';
         }
         
-        $ip = $this->ipRepository->getRemoteAddress();
+        $ip = $this->ipToCountryRepository->getRemoteAddress();
+        $regionId = $this->ipToRegionRepository->getRegionCode();
 
         $html = '<div style="padding:10px;background-color:#f8f8f8;border:1px solid #ddd;margin-bottom:7px;">
             Your IP Address: ' . $ip . '<br/>
-            Country: <b>' . $country . '</b>
+            Country: <b>' . $country . '</b><br/>
+            Region: <b>' . $regionId . '</b>
         </div>';
 
         return $html;

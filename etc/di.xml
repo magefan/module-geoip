@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magefan (support@magefan.com). All rights reserved.
+ * Please visit Magefan.com for license details (https://magefan.com/end-user-license-agreement).
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Magefan\GeoIp\Api\IpToRegionRepositoryInterface" type="Magefan\GeoIp\Model\IpToRegionRepository" />
+    <preference for="Magefan\GeoIp\Api\IpToCountryRepositoryInterface" type="Magefan\GeoIp\Model\IpToCountryRepository" />
+</config>

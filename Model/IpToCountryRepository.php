@@ -13,12 +13,13 @@ use Magento\Framework\Module\Dir as ModuleDir;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
+use Magefan\GeoIp\Api\IpToCountryRepositoryInterface;
 
 /**
  * Class IpToCountryRepository
  * @package Magefan\GeoIp\Model
  */
-class IpToCountryRepository
+class IpToCountryRepository implements IpToCountryRepositoryInterface
 {
     /**
      * Default path in system.xml
