@@ -20,4 +20,10 @@ interface IpToCountryRepositoryInterface
      * @return mixed
      */
     public function getVisitorCountryCode();
+
+    /**
+     * Retrieve current IP
+     * @return string
+     */
+    public function  getRemoteAddress();
 }

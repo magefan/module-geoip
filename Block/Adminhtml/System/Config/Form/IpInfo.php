@@ -54,9 +54,9 @@ class IpInfo extends \Magento\Config\Block\System\Config\Form\Field
         if ($country == "ZZ") {
             $country = 'Undefined';
         }
-        
+
         $ip = $this->ipToCountryRepository->getRemoteAddress();
-        $regionId = $this->ipToRegionRepository->getRegionCode();
+        $regionId = $this->ipToRegionRepository->getVisitorRegionCode();
 
         $html = '<div style="padding:10px;background-color:#f8f8f8;border:1px solid #ddd;margin-bottom:7px;">
             Your IP Address: ' . $ip . '<br/>

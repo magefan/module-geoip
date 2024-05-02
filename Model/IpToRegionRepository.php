@@ -8,13 +8,13 @@ declare(strict_types=1);
 
 namespace Magefan\GeoIp\Model;
 
-use Magefan\GeoIp\Api\IpToRegionRepositoryInterface;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
-use Magento\Framework\App\RequestInterface;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Framework\Filesystem\DirectoryList;
 use Magento\Framework\Module\Dir as ModuleDir;
-use Magento\Store\Model\ScopeInterface;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
+use Magefan\GeoIp\Api\IpToRegionRepositoryInterface;
 
 class IpToRegionRepository implements IpToRegionRepositoryInterface
 {
@@ -46,46 +46,42 @@ class IpToRegionRepository implements IpToRegionRepositoryInterface
     /**
      * @var DirectoryList
      */
-    protected $directoryList;
+    private $directoryList;
 
     /**
      * @var ModuleDir
      */
-    protected $moduleDir;
+    private $moduleDir;
 
     /**
-     * @param ScopeConfigInterface $config
      * @param RemoteAddress $remoteAddress
-     * @param RequestInterface $request
      * @param DirectoryList $directoryList
      * @param ModuleDir $moduleDir
+     * @param ScopeConfigInterface $config
+     * @param RequestInterface $httpRequest
      */
     public function __construct(
-        ScopeConfigInterface $config,
         RemoteAddress $remoteAddress,
-        RequestInterface $request,
         DirectoryList $directoryList,
-        ModuleDir $moduleDir
-    )
-    {
-        $this->config = $config;
+        ModuleDir $moduleDir,
+        ScopeConfigInterface $config,
+        RequestInterface $httpRequest
+    ) {
         $this->remoteAddress = $remoteAddress;
-        $this->request = $request;
         $this->directoryList = $directoryList;
         $this->moduleDir = $moduleDir;
+        $this->config = $config;
+        $this->request = $httpRequest;
     }
 
     /**
+     * Get Region Code by IP
      * @param string $ip
-     * @return string
+     * @return mixed
      */
-    public function getRegionCode(string $ip = ''): string
+    public function getRegionCode($ip)
     {
-        if (!$ip) {
-            $ip = $this->getIp();
-        }
-
-        if (!isset($this->ipToRegion[$ip])) {
+         if (!isset($this->ipToRegion[$ip])) {
             $this->ipToRegion[$ip] = '';
 
             try {
@@ -94,11 +90,12 @@ class IpToRegionRepository implements IpToRegionRepositoryInterface
                     $datFile = $filename;
                 } else {
                     $datFile = $this->moduleDir->getDir('Magefan_GeoIp') . '/data/GeoLite2-City.mmdb';
+                    //throw new \Exception('No .mmdb file');
                 }
 
                 $reader = new \GeoIp2\Database\Reader($datFile);
                 $record = $reader->city($ip);
-                if (isset($record->subdivisions[0])) {
+                if ($record && $record->subdivisions && isset($record->subdivisions[0])) {
                     $this->ipToRegion[$ip] = $record->subdivisions[0]->isoCode;
                 }
             } catch (\Exception $e) {}
@@ -108,15 +105,20 @@ class IpToRegionRepository implements IpToRegionRepositoryInterface
     }
 
     /**
+     * Retrieve current visitor country code by IP
+     * @return string | false
+     */
+    public function getVisitorRegionCode()
+    {
+        return $this->getRegionCode($this->getRemoteAddress());
+    }
+
+    /**
+     * Retrieve current IP
      * @return string
      */
-    private function getIp(): string
+    public function  getRemoteAddress()
     {
-        $cloudflareEnable = $this->config->getValue(self::XML_PATH_CLOUDFLARE_ENABLED, ScopeInterface::SCOPE_STORE);
-        if ($cloudflareEnable) {
-            return (string)$this->request->getServer('HTTP_CF_CONNECTING_IP');
-        } else {
-            return (string)$this->remoteAddress->getRemoteAddress();
-        }
+        return $this->remoteAddress->getRemoteAddress();
     }
 }

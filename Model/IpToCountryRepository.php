@@ -4,8 +4,9 @@
  * See LICENSE.txt for license details (http://opensource.org/licenses/osl-3.0.php).
  */
 
-namespace Magefan\GeoIp\Model;
+declare(strict_types=1);
 
+namespace Magefan\GeoIp\Model;
 
 use Magento\Store\Model\ScopeInterface;
 use Magento\Framework\Filesystem\DirectoryList;
@@ -15,10 +16,6 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
 use Magefan\GeoIp\Api\IpToCountryRepositoryInterface;
 
-/**
- * Class IpToCountryRepository
- * @package Magefan\GeoIp\Model
- */
 class IpToCountryRepository implements IpToCountryRepositoryInterface
 {
     /**
@@ -67,7 +64,6 @@ class IpToCountryRepository implements IpToCountryRepositoryInterface
     private $moduleDir;
 
     /**
-     * IpToCountryRepository constructor.
      * @param RemoteAddress $remoteAddress
      * @param DirectoryList $directoryList
      * @param ModuleDir $moduleDir
@@ -89,9 +85,9 @@ class IpToCountryRepository implements IpToCountryRepositoryInterface
     }
 
     /**
-     * [getCountryCode description]
-     * @param  string $ip
-     * @return string | false
+     * Get Country Code by IP
+     * @param string $ip
+     * @return mixed
      */
     public function getCountryCode($ip)
     {
@@ -139,6 +135,7 @@ class IpToCountryRepository implements IpToCountryRepositoryInterface
                         $datFile = $filename;
                     } else {
                         $datFile = $this->moduleDir->getDir('Magefan_GeoIp') . '/data/GeoLite2-Country.mmdb';
+                        //throw new \Exception('No .mmdb file');
                     }
                     $reader = new \GeoIp2\Database\Reader($datFile);
                     $record = $reader->country($ip);

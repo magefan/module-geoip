@@ -11,8 +11,19 @@ namespace Magefan\GeoIp\Api;
 interface IpToRegionRepositoryInterface
 {
     /**
-     * @param string $ip
+     * @param $ip
+     * @return mixed
+     */
+    public function getRegionCode($ip);
+
+    /**
+     * @return mixed
+     */
+    public function getVisitorRegionCode();
+
+    /**
+     * Retrieve current IP
      * @return string
      */
-    public function getRegionCode(string $ip = ''): string;
+    public function  getRemoteAddress();
 }
