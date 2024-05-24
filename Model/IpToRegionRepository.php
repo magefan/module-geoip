@@ -81,11 +81,12 @@ class IpToRegionRepository implements IpToRegionRepositoryInterface
      */
     public function getRegionCode($ip)
     {
-        if ((string)$ip && !isset($ip)) {
+        $ip = (string)$ip;
+        if (!$ip) {
            return '';
         }
 
-         if (!isset($this->ipToRegion[$ip])) {
+        if (!isset($this->ipToRegion[$ip])) {
             $this->ipToRegion[$ip] = '';
 
             try {
