@@ -91,6 +91,11 @@ class IpToCountryRepository implements IpToCountryRepositoryInterface
      */
     public function getCountryCode($ip)
     {
+        $ip = (string)$ip;
+        if (!$ip) {
+            return false;
+        }
+
         if (!isset($this->ipToCountry[$ip])) {
             $this->ipToCountry[$ip] = false;
 
