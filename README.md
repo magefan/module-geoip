@@ -140,6 +140,7 @@ http://software77.net/geo-ip/
 
 ### [Magento 2 Speed Optimization Extensions](https://magefan.com/magento-2-extensions/speed-optimization-extensions)
 
+  * [Magento 2 Full Page Cache Warmer](https://magefan.com/magento-2-full-page-cache-warmer)
   * [Magento 2 Lazy Load Extension](https://magefan.com/magento-2-image-lazy-load-extension)
   * [Magento 2 WebP Optimized Images Extension](https://magefan.com/magento-2-webp-optimized-images)
   * [Magento 2 Rocket JavaScript Extension](https://magefan.com/rocket-javascript-deferred-javascript)
