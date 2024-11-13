@@ -166,3 +166,4 @@ http://software77.net/geo-ip/
   * [Shopify Blog](https://apps.shopify.com/magefan-blog)
   * [Shopify Size Chart](https://magefan.com/shopify/apps/size-chart)
   * [Shopify Google Indexer](https://magefan.com/shopify/apps/google-indexing)
+  * [Shopify Product Feeds](https://magefan.com/shopify/apps/product-feed)
