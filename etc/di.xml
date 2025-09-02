@@ -8,4 +8,13 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="Magefan\GeoIp\Api\IpToRegionRepositoryInterface" type="Magefan\GeoIp\Model\IpToRegionRepository" />
     <preference for="Magefan\GeoIp\Api\IpToCountryRepositoryInterface" type="Magefan\GeoIp\Model\IpToCountryRepository" />
+
+    <type name="Magento\Framework\HTTP\PhpEnvironment\RemoteAddress">
+         <arguments>
+            <argument name="alternativeHeaders" xsi:type="array">
+                <item name="x-client-ip" xsi:type="string">HTTP_X_REAL_IP</item>
+                <item name="x-cf-connecting-ip" xsi:type="string">HTTP_CF_CONNECTING_IP</item>
+            </argument>
+        </arguments>
+     </type>
 </config>
