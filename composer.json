@@ -10,7 +10,7 @@
         "magefan/module-auto-language-switcher": "Install GeoIP Auto Language/Store Switcher Extension for Magento 2 (https://magefan.com/magento-2-auto-language-switcher). Use coupon code COMPOSER-FAN to get a 10% discount on magefan.com."
     },
     "type": "magento2-module",
-    "version": "2.3.3",
+    "version": "2.3.4",
     "autoload": {
         "psr-4": {
             "Magefan\\GeoIp\\": ""
