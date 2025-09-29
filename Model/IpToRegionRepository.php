@@ -94,8 +94,7 @@ class IpToRegionRepository implements IpToRegionRepositoryInterface
                 if (file_exists($filename)) {
                     $datFile = $filename;
                 } else {
-                    $datFile = $this->moduleDir->getDir('Magefan_GeoIp') . '/data/GeoLite2-City.mmdb';
-                    //throw new \Exception('No .mmdb file');
+                    return $this->ipToRegion[$ip];
                 }
 
                 $reader = new \GeoIp2\Database\Reader($datFile);

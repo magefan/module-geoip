@@ -139,8 +139,7 @@ class IpToCountryRepository implements IpToCountryRepositoryInterface
                     if (file_exists($filename)) {
                         $datFile = $filename;
                     } else {
-                        $datFile = $this->moduleDir->getDir('Magefan_GeoIp') . '/data/GeoLite2-Country.mmdb';
-                        //throw new \Exception('No .mmdb file');
+                        return $this->ipToCountry[$ip];
                     }
                     $reader = new \GeoIp2\Database\Reader($datFile);
                     $record = $reader->country($ip);
