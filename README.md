@@ -69,7 +69,7 @@ Please contact us to get a quote
 https://magefan.com/contact
 
 ## License
-The code is licensed under [Open Software License ("OSL") v. 3.0](http://opensource.org/licenses/osl-3.0.php).
+The code is licensed under [Open Software License ("OSL") v. 3.0](http://opensource.org/licenses/osl-3.0.php) and [MaxMind EULA](https://www.maxmind.com/en/geolite2/eula).
 
 This product includes GeoLite2 data created by MaxMind, available from
 <a href="https://www.maxmind.com">https://www.maxmind.com</a>.
