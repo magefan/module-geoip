@@ -12,8 +12,8 @@
     <type name="Magento\Framework\HTTP\PhpEnvironment\RemoteAddress">
          <arguments>
             <argument name="alternativeHeaders" xsi:type="array">
-                <item name="x-client-ip" xsi:type="string">HTTP_X_REAL_IP</item>
                 <item name="x-cf-connecting-ip" xsi:type="string">HTTP_CF_CONNECTING_IP</item>
+                <item name="x-client-ip" xsi:type="string">HTTP_X_REAL_IP</item>
             </argument>
         </arguments>
      </type>
