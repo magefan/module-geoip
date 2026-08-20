@@ -12,7 +12,7 @@ use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Framework\Setup\Patch\PatchVersionInterface;
 
-class DropTable  implements DataPatchInterface, PatchVersionInterface
+class DropTable implements DataPatchInterface, PatchVersionInterface
 {
     /**
      * @var ModuleDataSetupInterface
@@ -21,32 +21,39 @@ class DropTable  implements DataPatchInterface, PatchVersionInterface
 
     /**
      * @param ModuleDataSetupInterface $moduleDataSetup
-
      */
     public function __construct(
         ModuleDataSetupInterface $moduleDataSetup
-    )
-    {
+    ) {
         $this->moduleDataSetup = $moduleDataSetup;
     }
 
+    /**
+     * @inheritDoc
+     */
     public static function getDependencies()
     {
         return [];
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getAliases()
     {
         return [];
     }
 
+    /**
+     * @inheritDoc
+     */
     public function apply()
     {
         $this->moduleDataSetup->startSetup();
         $setup = $this->moduleDataSetup;
         $connection = $setup->getConnection();
 
-        $table = $connection->getTableName( 'magefan_geoip_country' );
+        $table = $connection->getTableName('magefan_geoip_country');
         if ($connection->isTableExists($table)) {
             $connection->dropTable($table);
         }
@@ -54,6 +61,9 @@ class DropTable  implements DataPatchInterface, PatchVersionInterface
         $this->moduleDataSetup->endSetup();
     }
 
+    /**
+     * @inheritDoc
+     */
     public static function getVersion()
     {
         return '2.2.0';

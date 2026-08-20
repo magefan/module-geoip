@@ -45,6 +45,7 @@ class IpInfo extends \Magento\Config\Block\System\Config\Form\Field
 
     /**
      * Return info block html
+     *
      * @param  \Magento\Framework\Data\Form\Element\AbstractElement $element
      * @return string
      */
@@ -66,5 +67,4 @@ class IpInfo extends \Magento\Config\Block\System\Config\Form\Field
 
         return $html;
     }
-
 }

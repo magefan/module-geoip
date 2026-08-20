@@ -21,24 +21,34 @@ class MaxMindInfo extends \Magento\Config\Block\System\Config\Form\Field
     protected $maxMind;
 
     /**
+     * @var \Magento\Framework\Filesystem\Driver\File
+     */
+    private $file;
+
+    /**
      * MaxMindInfo constructor.
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Framework\Filesystem\DirectoryList $dir
      * @param \Magefan\GeoIp\Model\GeoIpDatabase\MaxMind $maxMind
+     * @param \Magento\Framework\Filesystem\Driver\File $file
      * @param array $data
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Framework\Filesystem\DirectoryList $dir,
         \Magefan\GeoIp\Model\GeoIpDatabase\MaxMind $maxMind,
+        \Magento\Framework\Filesystem\Driver\File $file,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->_dir = $dir;
         $this->maxMind = $maxMind;
+        $this->file = $file;
     }
 
     /**
+     * Render the MaxMind database update info block.
+     *
      * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
      * @return string
      * @throws \Magento\Framework\Exception\FileSystemException
@@ -48,15 +58,16 @@ class MaxMindInfo extends \Magento\Config\Block\System\Config\Form\Field
     {
         $dirList = $this->_dir->getPath('var'). '/magefan/geoip/GeoLite2-Country.mmdb';
 
-        if (!file_exists($dirList)) {
+        if (!$this->file->isExists($dirList)) {
             try {
                 $this->maxMind->update();
             } catch (\Exception $e) {
+                $this->_logger->debug($e->getMessage());
             }
         }
 
-        if (file_exists($dirList)) {
-            $modified = date("F d, Y.", filemtime($dirList));
+        if ($this->file->isExists($dirList)) {
+            $modified = date("F d, Y.", $this->file->stat($dirList)['mtime']);
         } else {
             $modified = __('Can not download DB.');
         }

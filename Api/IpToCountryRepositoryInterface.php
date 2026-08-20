@@ -11,19 +11,24 @@ namespace Magefan\GeoIp\Api;
 interface IpToCountryRepositoryInterface
 {
     /**
-     * @param $ip
+     * Retrieve country code by IP address.
+     *
+     * @param string $ip
      * @return mixed
      */
     public function getCountryCode($ip);
 
     /**
+     * Retrieve country code of the current visitor.
+     *
      * @return mixed
      */
     public function getVisitorCountryCode();
 
     /**
-     * Retrieve current IP
+     * Retrieve current IP.
+     *
      * @return string
      */
-    public function  getRemoteAddress();
+    public function getRemoteAddress();
 }

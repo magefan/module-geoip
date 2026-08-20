@@ -12,6 +12,8 @@ namespace Magefan\GeoIp\Block\Adminhtml\System\Config\Form;
 class CloudflareCheck extends \Magento\Config\Block\System\Config\Form\Field
 {
     /**
+     * Render Cloudflare IP detection script.
+     *
      * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
      * @return string
      */

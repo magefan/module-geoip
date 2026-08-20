@@ -6,8 +6,7 @@
 namespace Magefan\GeoIp\Cron;
 
 /**
- * Class UpdateMaxMind
- * @package Magefan\GeoIp\Cron
+ * Cron job that downloads and updates the MaxMind GeoIP database.
  */
 class UpdateMaxMind
 {

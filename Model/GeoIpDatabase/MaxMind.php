@@ -9,20 +9,24 @@ namespace Magefan\GeoIp\Model\GeoIpDatabase;
 use Magefan\GeoIp\Model\Config;
 use Magento\Framework\Archive\Gz;
 use Magento\Framework\Archive\Tar;
+use Magento\Framework\Filesystem\Driver\File;
+use Magento\Framework\HTTP\Client\Curl;
+use Magento\Framework\HTTP\Client\CurlFactory;
+
 /**
- * Class MaxMind
- * @package Magefan\GeoIp\Model\GeoIpDatabase
+ * Downloads and updates the MaxMind GeoIP database files, either from the Magefan server
+ * or, when a license key is configured, directly from the MaxMind API.
  */
 class MaxMind
 {
     /**
-     * Url
+     * Magefan server URL for the GeoLite2 country database.
      */
-    const URL = 'https://magefan.com/media/geoip/GeoLite2-Country.mmdb';
+    public const URL = 'https://magefan.com/media/geoip/GeoLite2-Country.mmdb';
 
-    const URL_CITY = 'https://magefan.com/media/geoip/GeoLite2-City.mmdb';
+    public const URL_CITY = 'https://magefan.com/media/geoip/GeoLite2-City.mmdb';
 
-    const URL_API = 'https://download.maxmind.com/app/geoip_download';
+    public const URL_API = 'https://download.maxmind.com/app/geoip_download';
 
     /**
      * @var \Magento\Framework\Filesystem\DirectoryList
@@ -31,7 +35,7 @@ class MaxMind
     /**
      * @var \Magento\Framework\Filesystem
      */
-     protected $_file;
+    protected $_file;
     /**
      * @var \Psr\Log\LoggerInterface
      */
@@ -53,6 +57,16 @@ class MaxMind
     private $tar;
 
     /**
+     * @var File
+     */
+    private $fileDriver;
+
+    /**
+     * @var CurlFactory
+     */
+    private $curlFactory;
+
+    /**
      * MaxMind constructor.
      * @param \Magento\Framework\Filesystem\DirectoryList $dir
      * @param \Magento\Framework\Filesystem\Io\File $file
@@ -60,6 +74,8 @@ class MaxMind
      * @param Config $config
      * @param Gz $gz
      * @param Tar $tar
+     * @param File $fileDriver
+     * @param CurlFactory $curlFactory
      */
     public function __construct(
         \Magento\Framework\Filesystem\DirectoryList $dir,
@@ -67,7 +83,9 @@ class MaxMind
         \Psr\Log\LoggerInterface $logger,
         Config $config,
         Gz $gz,
-        Tar $tar
+        Tar $tar,
+        File $fileDriver,
+        CurlFactory $curlFactory
     ) {
         $this->_dir = $dir;
         $this->_file = $file;
@@ -75,9 +93,14 @@ class MaxMind
         $this->config = $config;
         $this->gz = $gz;
         $this->tar = $tar;
+        $this->fileDriver = $fileDriver;
+        $this->curlFactory = $curlFactory;
     }
 
     /**
+     * Create the GeoIP database directory if it does not exist yet.
+     *
+     * @param string $dirPath
      * @return bool
      * @throws \Magento\Framework\Exception\FileSystemException
      * @throws \Magento\Framework\Exception\LocalizedException
@@ -85,7 +108,7 @@ class MaxMind
     protected function createDir($dirPath)
     {
         $ioAdapter = $this->_file;
-        if (!is_dir($dirPath)) {
+        if (!$this->fileDriver->isDirectory($dirPath)) {
             if (!$ioAdapter->mkdir($dirPath, 0775)) {
                 throw new \Magento\Framework\Exception\LocalizedException(__('Can not create folder' . $dirPath));
             }
@@ -94,6 +117,8 @@ class MaxMind
     }
 
     /**
+     * Update the GeoIP database using the configured source.
+     *
      * @return bool
      * @throws \Magento\Framework\Exception\FileSystemException
      * @throws \Magento\Framework\Exception\LocalizedException
@@ -106,7 +131,10 @@ class MaxMind
             return $this->updateByMagefanServer();
         }
     }
+
     /**
+     * Download the GeoIP databases from the Magefan server.
+     *
      * @return bool
      * @throws \Magento\Framework\Exception\FileSystemException
      * @throws \Magento\Framework\Exception\LocalizedException
@@ -117,30 +145,28 @@ class MaxMind
         $this->createDir($dbPath);
 
         foreach ([self::URL, self::URL_CITY] as $url) {
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            /** @var Curl $curl */
+            $curl = $this->curlFactory->create();
+            $curl->get($url);
 
-            $result = curl_exec($ch);
+            $result = $curl->getBody();
             if (!$result) {
-                throw new \Magento\Framework\Exception\LocalizedException(__('Can not download GeoLite2-Country.mmdb file.'));
+                throw new \Magento\Framework\Exception\LocalizedException(
+                    __('Can not download GeoLite2-Country.mmdb file.')
+                );
             }
 
-            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            if ($http_code != 200) {
-                throw new \Magento\Framework\Exception\LocalizedException(__('File download failed. Http code: %1.', $http_code) );
+            $httpCode = $curl->getStatus();
+            if ($httpCode != 200) {
+                throw new \Magento\Framework\Exception\LocalizedException(
+                    __('File download failed. Http code: %1.', $httpCode)
+                );
             }
-
-            curl_close($ch);
 
             $urlArray = explode('/', $url);
-            $output_filename = $dbPath . '/' . end($urlArray);
+            $outputFilename = $dbPath . '/' . end($urlArray);
 
-            $fp = fopen($output_filename, 'w');
-            if (!fwrite($fp, $result)) {
-                throw new \Magento\Framework\Exception\LocalizedException(__('Can not save or overwrite GeoLite2-Country.mmdb file.'));
-            }
-            fclose($fp);
+            $this->fileDriver->filePutContents($outputFilename, $result);
         }
 
         return true;
@@ -165,35 +191,38 @@ class MaxMind
                     'license_key' => $this->config->getLicenseKey()
                 ]);
 
-            $ch = curl_init($url);
-
             $outputFilename = $dbPath . DIRECTORY_SEPARATOR . $file . '.tar.gz';
-            $fp = fopen($outputFilename, 'wb');
+            $fp = $this->fileDriver->fileOpen($outputFilename, 'wb');
 
-            curl_setopt_array($ch, array(
+            /** @var Curl $curl */
+            $curl = $this->curlFactory->create();
+            $curl->setOptions([
                 CURLOPT_HTTPGET => true,
                 CURLOPT_BINARYTRANSFER => true,
                 CURLOPT_HEADER => false,
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_FILE => $fp,
-            ));
+            ]);
+            $curl->get($url);
 
-            $response = curl_exec($ch);
+            $response = $curl->getBody();
+            $httpCode = $curl->getStatus();
 
             if (!$response) {
+                $this->fileDriver->fileClose($fp);
                 throw new \Magento\Framework\Exception\LocalizedException(
                     __('Can not download ' . $file . '.tar.gz archive.')
                 );
             }
 
-            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            if ($http_code != 200) {
+            if ($httpCode != 200) {
+                $this->fileDriver->fileClose($fp);
                 throw new \Magento\Framework\Exception\LocalizedException(
-                    __('File download failed. Http code: %1. Please check the license key.', $http_code)
+                    __('File download failed. Http code: %1. Please check the license key.', $httpCode)
                 );
             }
 
-            curl_close($ch);
+            $this->fileDriver->fileClose($fp);
 
             $unpackGz = $this->gz->unpack($outputFilename, $dbPath . DIRECTORY_SEPARATOR);
             $unpackTar = $this->tar->unpack($unpackGz, $dbPath . DIRECTORY_SEPARATOR);
@@ -212,8 +241,6 @@ class MaxMind
                     $this->_file->rm($info['text']);
                 }
             }
-
-            fclose($fp);
         }
 
         return true;

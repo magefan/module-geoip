@@ -14,6 +14,7 @@ use Magento\Framework\Module\Dir as ModuleDir;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
+use Magento\Framework\Filesystem\Driver\File;
 use Magefan\GeoIp\Api\IpToCountryRepositoryInterface;
 
 class IpToCountryRepository implements IpToCountryRepositoryInterface
@@ -21,17 +22,17 @@ class IpToCountryRepository implements IpToCountryRepositoryInterface
     /**
      * Default path in system.xml
      */
-    const XML_PATH_CLOUDFLARE_ENABLED  = 'mfgeoip/cloudflare/cloudflare_ip_enable';
+    public const XML_PATH_CLOUDFLARE_ENABLED = 'mfgeoip/cloudflare/cloudflare_ip_enable';
 
     /**
      * Allow IPs path in system.xml
      */
-    const XML_PATH_ALLOW_IPS  = 'mfgeoip/developer/allow_ips';
+    public const XML_PATH_ALLOW_IPS = 'mfgeoip/developer/allow_ips';
 
     /**
      * Simulate country path in system.xml
      */
-    const XML_PATH_SIMULATE_COUNTRY  = 'mfgeoip/developer/simulate_country';
+    public const XML_PATH_SIMULATE_COUNTRY = 'mfgeoip/developer/simulate_country';
 
     /**
      * @var RemoteAddress
@@ -64,28 +65,37 @@ class IpToCountryRepository implements IpToCountryRepositoryInterface
     private $moduleDir;
 
     /**
+     * @var File
+     */
+    private $file;
+
+    /**
      * @param RemoteAddress $remoteAddress
      * @param DirectoryList $directoryList
      * @param ModuleDir $moduleDir
      * @param ScopeConfigInterface $config
      * @param RequestInterface $httpRequest
+     * @param File $file
      */
     public function __construct(
         RemoteAddress $remoteAddress,
         DirectoryList $directoryList,
         ModuleDir $moduleDir,
         ScopeConfigInterface $config,
-        RequestInterface $httpRequest
+        RequestInterface $httpRequest,
+        File $file
     ) {
         $this->remoteAddress = $remoteAddress;
         $this->directoryList = $directoryList;
         $this->moduleDir = $moduleDir;
         $this->config = $config;
         $this->request = $httpRequest;
+        $this->file = $file;
     }
 
     /**
      * Get Country Code by IP
+     *
      * @param string $ip
      * @return mixed
      */
@@ -99,14 +109,18 @@ class IpToCountryRepository implements IpToCountryRepositoryInterface
         if (!isset($this->ipToCountry[$ip])) {
             $this->ipToCountry[$ip] = false;
 
-            $simulateCountry = $this->config->getValue(self::XML_PATH_SIMULATE_COUNTRY, ScopeInterface::SCOPE_STORE) ?: '';
+            $simulateCountry = $this->config->getValue(
+                self::XML_PATH_SIMULATE_COUNTRY,
+                ScopeInterface::SCOPE_STORE
+            ) ?: '';
             if ($simulateCountry) {
-                $allowedIPs = explode(',', $this->config->getValue(self::XML_PATH_ALLOW_IPS, ScopeInterface::SCOPE_STORE) ?: '');
+                $allowIps = $this->config->getValue(self::XML_PATH_ALLOW_IPS, ScopeInterface::SCOPE_STORE) ?: '';
+                $allowedIPs = explode(',', $allowIps);
                 foreach ($allowedIPs as $allowedIp) {
                     $allowedIp = trim($allowedIp);
                     if ($allowedIp && $allowedIp == $ip) {
-                       $this->ipToCountry[$ip] = $simulateCountry;
-                       return $this->ipToCountry[$ip];
+                        $this->ipToCountry[$ip] = $simulateCountry;
+                        return $this->ipToCountry[$ip];
                     }
                 }
             }
@@ -123,11 +137,12 @@ class IpToCountryRepository implements IpToCountryRepositoryInterface
                 if (function_exists('geoip_country_code_by_name')) {
                     $rf = new \ReflectionFunction('geoip_country_code_by_name');
                     $params = $rf->getParameters();
-                    if (!$params || !is_array($params) || count($params) < 2) { /* Fix for custom geoip php libraries, so 0 or 1 params */
+                    // Fix for custom geoip php libraries, so 0 or 1 params
+                    if (!$params || !is_array($params) || count($params) < 2) {
                         try {
                             $this->ipToCountry[$ip] = geoip_country_code_by_name($ip);
                         } catch (\Exception $e) {
-                            //do nothing
+                            $this->ipToCountry[$ip] = false;
                         }
                     }
                 }
@@ -135,8 +150,9 @@ class IpToCountryRepository implements IpToCountryRepositoryInterface
 
             if (!$this->ipToCountry[$ip]) {
                 try {
-                    $filename = $this->directoryList->getPath('var') . DIRECTORY_SEPARATOR . 'magefan/geoip/GeoLite2-Country.mmdb';
-                    if (file_exists($filename)) {
+                    $filename = $this->directoryList->getPath('var')
+                        . DIRECTORY_SEPARATOR . 'magefan/geoip/GeoLite2-Country.mmdb';
+                    if ($this->file->isExists($filename)) {
                         $datFile = $filename;
                     } else {
                         return $this->ipToCountry[$ip];
@@ -147,7 +163,9 @@ class IpToCountryRepository implements IpToCountryRepositoryInterface
                     if ($record && $record->country && $record->country->isoCode) {
                         $this->ipToCountry[$ip] = $record->country->isoCode;
                     }
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                    $this->ipToCountry[$ip] = false;
+                }
             }
         }
 
@@ -156,6 +174,7 @@ class IpToCountryRepository implements IpToCountryRepositoryInterface
 
     /**
      * Retrieve current visitor country code by IP
+     *
      * @return string | false
      */
     public function getVisitorCountryCode()
@@ -165,9 +184,10 @@ class IpToCountryRepository implements IpToCountryRepositoryInterface
 
     /**
      * Retrieve current IP
+     *
      * @return string
      */
-    public function  getRemoteAddress()
+    public function getRemoteAddress()
     {
         return $this->remoteAddress->getRemoteAddress();
     }

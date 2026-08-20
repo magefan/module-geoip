@@ -9,8 +9,7 @@ namespace Magefan\GeoIp\Controller\Adminhtml\Maxmind;
 use Magento\Framework\Controller\ResultFactory;
 
 /**
- * Class DownloadDb
- * @package Magefan\GeoIp\Controller\Adminhtml\Ajax
+ * Downloads the latest MaxMind GeoIP database on admin request.
  */
 class Update extends \Magento\Backend\App\Action
 {
@@ -19,7 +18,7 @@ class Update extends \Magento\Backend\App\Action
      *
      * @see _isAllowed()
      */
-    const ADMIN_RESOURCE = 'Magefan_GeoIp::geo_ip';
+    public const ADMIN_RESOURCE = 'Magefan_GeoIp::geo_ip';
 
     /**
      * @var \Magefan\GeoIp\Model\GeoIpDatabase\MaxMind
@@ -40,6 +39,8 @@ class Update extends \Magento\Backend\App\Action
     }
 
     /**
+     * Download and update the MaxMind GeoIP database.
+     *
      * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
      * @throws \Magento\Framework\Exception\FileSystemException
      * @throws \Magento\Framework\Exception\LocalizedException

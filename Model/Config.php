@@ -11,7 +11,7 @@ use Magento\Store\Model\ScopeInterface;
 
 class Config
 {
-    const XML_PATH_LICENSE_KEY = 'mfgeoip/update_geoip/key';
+    public const XML_PATH_LICENSE_KEY = 'mfgeoip/update_geoip/key';
 
     /**
      * @var ScopeConfigInterface
@@ -29,8 +29,10 @@ class Config
     }
 
     /**
-     * @param $path
-     * @param null $storeId
+     * Retrieve config value by path.
+     *
+     * @param string $path
+     * @param int|string|null $storeId
      * @return mixed
      */
     public function getConfig($path, $storeId = null)
@@ -43,8 +45,10 @@ class Config
     }
 
     /**
-     * @param null $storeId
-     * @return bool
+     * Retrieve MaxMind license key.
+     *
+     * @param int|string|null $storeId
+     * @return string
      */
     public function getLicenseKey($storeId = null)
     {

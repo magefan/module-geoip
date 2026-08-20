@@ -14,6 +14,7 @@ use Magento\Framework\Module\Dir as ModuleDir;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
+use Magento\Framework\Filesystem\Driver\File;
 use Magefan\GeoIp\Api\IpToRegionRepositoryInterface;
 
 class IpToRegionRepository implements IpToRegionRepositoryInterface
@@ -21,7 +22,7 @@ class IpToRegionRepository implements IpToRegionRepositoryInterface
     /**
      * Default path in system.xml
      */
-    const XML_PATH_CLOUDFLARE_ENABLED  = 'mfgeoip/cloudflare/cloudflare_ip_enable';
+    public const XML_PATH_CLOUDFLARE_ENABLED = 'mfgeoip/cloudflare/cloudflare_ip_enable';
 
     /**
      * @var array
@@ -54,28 +55,37 @@ class IpToRegionRepository implements IpToRegionRepositoryInterface
     private $moduleDir;
 
     /**
+     * @var File
+     */
+    private $file;
+
+    /**
      * @param RemoteAddress $remoteAddress
      * @param DirectoryList $directoryList
      * @param ModuleDir $moduleDir
      * @param ScopeConfigInterface $config
      * @param RequestInterface $httpRequest
+     * @param File $file
      */
     public function __construct(
         RemoteAddress $remoteAddress,
         DirectoryList $directoryList,
         ModuleDir $moduleDir,
         ScopeConfigInterface $config,
-        RequestInterface $httpRequest
+        RequestInterface $httpRequest,
+        File $file
     ) {
         $this->remoteAddress = $remoteAddress;
         $this->directoryList = $directoryList;
         $this->moduleDir = $moduleDir;
         $this->config = $config;
         $this->request = $httpRequest;
+        $this->file = $file;
     }
 
     /**
      * Get Region Code by IP
+     *
      * @param string $ip
      * @return mixed
      */
@@ -83,15 +93,16 @@ class IpToRegionRepository implements IpToRegionRepositoryInterface
     {
         $ip = (string)$ip;
         if (!$ip) {
-           return '';
+            return '';
         }
 
         if (!isset($this->ipToRegion[$ip])) {
             $this->ipToRegion[$ip] = '';
 
             try {
-                $filename = $this->directoryList->getPath('var') . DIRECTORY_SEPARATOR . 'magefan/geoip/GeoLite2-City.mmdb';
-                if (file_exists($filename)) {
+                $filename = $this->directoryList->getPath('var')
+                    . DIRECTORY_SEPARATOR . 'magefan/geoip/GeoLite2-City.mmdb';
+                if ($this->file->isExists($filename)) {
                     $datFile = $filename;
                 } else {
                     return $this->ipToRegion[$ip];
@@ -102,7 +113,9 @@ class IpToRegionRepository implements IpToRegionRepositoryInterface
                 if ($record && $record->subdivisions && isset($record->subdivisions[0])) {
                     $this->ipToRegion[$ip] = $record->subdivisions[0]->isoCode;
                 }
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+                $this->ipToRegion[$ip] = '';
+            }
         }
 
         return $this->ipToRegion[$ip];
@@ -110,6 +123,7 @@ class IpToRegionRepository implements IpToRegionRepositoryInterface
 
     /**
      * Retrieve current visitor country code by IP
+     *
      * @return string | false
      */
     public function getVisitorRegionCode()
@@ -119,9 +133,10 @@ class IpToRegionRepository implements IpToRegionRepositoryInterface
 
     /**
      * Retrieve current IP
+     *
      * @return string
      */
-    public function  getRemoteAddress()
+    public function getRemoteAddress()
     {
         return $this->remoteAddress->getRemoteAddress();
     }

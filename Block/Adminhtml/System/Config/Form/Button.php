@@ -7,12 +7,11 @@
 namespace Magefan\GeoIp\Block\Adminhtml\System\Config\Form;
 
 /**
- * Class Button
- * @package Magefan\GeoIp\Block\Adminhtml\System\Config\Form
+ * Admin config field block rendering an action button.
  */
 class Button extends \Magento\Config\Block\System\Config\Form\Field
 {
-    const BUTTON_TEMPLATE = 'system/config/button/button.phtml';
+    public const BUTTON_TEMPLATE = 'system/config/button/button.phtml';
 
     /**
      * Set template to itself
