@@ -2,15 +2,15 @@
     "name": "magefan/module-geoip",
     "description": "Allows to get country code by IP",
     "require": {
-        "magefan/module-community" : ">=2.3.6",
-        "geoip2/geoip2": "^2.9.0"
+        "magefan/module-community" : ">=2.4.6",
+        "geoip2/geoip2": "^3.4.0"
     },
     "suggest": {
         "magefan/module-auto-currency-switcher": "Install GeoIP Auto Currency Switcher Extension for Magento 2 (https://magefan.com/magento-2-currency-switcher-auto-currency-by-country). Use coupon code COMPOSER-FAN to get a 10% discount on magefan.com.",
         "magefan/module-auto-language-switcher": "Install GeoIP Auto Language/Store Switcher Extension for Magento 2 (https://magefan.com/magento-2-auto-language-switcher). Use coupon code COMPOSER-FAN to get a 10% discount on magefan.com."
     },
     "type": "magento2-module",
-    "version": "2.3.6",
+    "version": "2.4.0",
     "autoload": {
         "psr-4": {
             "Magefan\\GeoIp\\": ""
