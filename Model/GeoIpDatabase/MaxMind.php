@@ -198,7 +198,6 @@ class MaxMind
             $curl = $this->curlFactory->create();
             $curl->setOptions([
                 CURLOPT_HTTPGET => true,
-                CURLOPT_BINARYTRANSFER => true,
                 CURLOPT_HEADER => false,
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_FILE => $fp,
@@ -208,21 +207,32 @@ class MaxMind
             $response = $curl->getBody();
             $httpCode = $curl->getStatus();
 
+            $this->fileDriver->fileClose($fp);
+
             if (!$response) {
-                $this->fileDriver->fileClose($fp);
                 throw new \Magento\Framework\Exception\LocalizedException(
                     __('Can not download ' . $file . '.tar.gz archive.')
                 );
             }
 
-            if ($httpCode != 200) {
-                $this->fileDriver->fileClose($fp);
+            /**
+             * Magento's Curl client misreports the status of a redirected request: its header
+             * callback never resets between redirect hops, so getStatus() can return the
+             * intermediate 30x code instead of the final one even though the file was
+             * downloaded correctly. Fall back to checking the actual gzip signature so a
+             * successfully downloaded archive is not rejected because of that upstream bug.
+             */
+            if ($httpCode != 200 && !$this->isValidGzFile($outputFilename)) {
+                if ($httpCode == 429) {
+                    throw new \Magento\Framework\Exception\LocalizedException(
+                        __('MaxMind daily download limit reached. Please try again later.')
+                    );
+                }
+
                 throw new \Magento\Framework\Exception\LocalizedException(
                     __('File download failed. Http code: %1. Please check the license key.', $httpCode)
                 );
             }
-
-            $this->fileDriver->fileClose($fp);
 
             $unpackGz = $this->gz->unpack($outputFilename, $dbPath . DIRECTORY_SEPARATOR);
             $unpackTar = $this->tar->unpack($unpackGz, $dbPath . DIRECTORY_SEPARATOR);
@@ -244,5 +254,25 @@ class MaxMind
         }
 
         return true;
+    }
+
+    /**
+     * Check whether the downloaded file starts with a valid gzip signature.
+     *
+     * @param string $filename
+     * @return bool
+     * @throws \Magento\Framework\Exception\FileSystemException
+     */
+    private function isValidGzFile(string $filename): bool
+    {
+        if (!$this->fileDriver->isExists($filename)) {
+            return false;
+        }
+
+        $resource = $this->fileDriver->fileOpen($filename, 'rb');
+        $signature = $this->fileDriver->fileRead($resource, 2);
+        $this->fileDriver->fileClose($resource);
+
+        return $signature === "\x1f\x8b";
     }
 }
