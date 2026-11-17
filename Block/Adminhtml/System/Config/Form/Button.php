@@ -22,7 +22,7 @@ class Button extends \Magento\Config\Block\System\Config\Form\Field
     {
         parent::_prepareLayout();
         if (!$this->getTemplate()) {
-            $this->setTemplate(static::BUTTON_TEMPLATE);
+            $this->_template = static::BUTTON_TEMPLATE;
         }
         return $this;
     }
