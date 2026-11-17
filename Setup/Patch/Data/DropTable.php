@@ -59,6 +59,7 @@ class DropTable implements DataPatchInterface, PatchVersionInterface
         }
 
         $this->moduleDataSetup->endSetup();
+        return $this;
     }
 
     /**
